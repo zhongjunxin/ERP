@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.CustomerInformation.mapper.CustomerinformationTaggingMapper">
+    
+    <resultMap type="CustomerinformationTagging" id="CustomerinformationTaggingResult">
+        <result property="tagId"    column="tag_id"    />
+        <result property="tagName"    column="tag_name"    />
+        <result property="customerId"    column="customer_id"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectCustomerinformationTaggingVo">
+        select tag_id, tag_name, customer_id, create_time, remark from customerinformation_tagging
+    </sql>
+
+    <select id="selectCustomerinformationTaggingList" parameterType="CustomerinformationTagging" resultMap="CustomerinformationTaggingResult">
+        <include refid="selectCustomerinformationTaggingVo"/>
+        <where>  
+            <if test="tagId != null "> and tag_id = #{tagId}</if>
+            <if test="tagName != null  and tagName != ''"> and tag_name like concat('%', #{tagName}, '%')</if>
+            <if test="customerId != null  and customerId != ''"> and customer_id = #{customerId}</if>
+        </where>
+    </select>
+    
+    <select id="selectCustomerinformationTaggingByTagId" parameterType="Long" resultMap="CustomerinformationTaggingResult">
+        <include refid="selectCustomerinformationTaggingVo"/>
+        where tag_id = #{tagId}
+    </select>
+
+    <insert id="insertCustomerinformationTagging" parameterType="CustomerinformationTagging" useGeneratedKeys="true" keyProperty="tagId">
+        insert into customerinformation_tagging
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="tagName != null and tagName != ''">tag_name,</if>
+            <if test="customerId != null and customerId != ''">customer_id,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="tagName != null and tagName != ''">#{tagName},</if>
+            <if test="customerId != null and customerId != ''">#{customerId},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateCustomerinformationTagging" parameterType="CustomerinformationTagging">
+        update customerinformation_tagging
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="tagName != null and tagName != ''">tag_name = #{tagName},</if>
+            <if test="customerId != null and customerId != ''">customer_id = #{customerId},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where tag_id = #{tagId}
+    </update>
+
+    <delete id="deleteCustomerinformationTaggingByTagId" parameterType="Long">
+        delete from customerinformation_tagging where tag_id = #{tagId}
+    </delete>
+
+    <delete id="deleteCustomerinformationTaggingByTagIds" parameterType="String">
+        delete from customerinformation_tagging where tag_id in 
+        <foreach item="tagId" collection="array" open="(" separator="," close=")">
+            #{tagId}
+        </foreach>
+    </delete>
+
+</mapper>

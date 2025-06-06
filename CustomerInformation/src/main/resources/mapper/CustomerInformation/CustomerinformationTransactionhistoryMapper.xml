@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.CustomerInformation.mapper.CustomerinformationTransactionhistoryMapper">
+    
+    <resultMap type="CustomerinformationTransactionhistory" id="CustomerinformationTransactionhistoryResult">
+        <result property="transactionId"    column="transaction_id"    />
+        <result property="customerId"    column="customer_id"    />
+        <result property="orderId"    column="order_id"    />
+        <result property="transactionType"    column="transaction_type"    />
+        <result property="amount"    column="amount"    />
+        <result property="transactionTime"    column="transaction_time"    />
+        <result property="paymentMethod"    column="payment_method"    />
+        <result property="handler"    column="handler"    />
+    </resultMap>
+
+    <sql id="selectCustomerinformationTransactionhistoryVo">
+        select transaction_id, customer_id, order_id, transaction_type, amount, transaction_time, payment_method, handler from customerinformation_transactionhistory
+    </sql>
+
+    <select id="selectCustomerinformationTransactionhistoryList" parameterType="CustomerinformationTransactionhistory" resultMap="CustomerinformationTransactionhistoryResult">
+        <include refid="selectCustomerinformationTransactionhistoryVo"/>
+        <where>  
+            <if test="transactionId != null "> and transaction_id = #{transactionId}</if>
+            <if test="customerId != null  and customerId != ''"> and customer_id = #{customerId}</if>
+            <if test="orderId != null  and orderId != ''"> and order_id = #{orderId}</if>
+            <if test="transactionType != null  and transactionType != ''"> and transaction_type = #{transactionType}</if>
+            <if test="amount != null "> and amount = #{amount}</if>
+            <if test="transactionTime != null "> and transaction_time = #{transactionTime}</if>
+            <if test="paymentMethod != null  and paymentMethod != ''"> and payment_method = #{paymentMethod}</if>
+            <if test="handler != null  and handler != ''"> and handler = #{handler}</if>
+        </where>
+    </select>
+    
+    <select id="selectCustomerinformationTransactionhistoryByTransactionId" parameterType="Long" resultMap="CustomerinformationTransactionhistoryResult">
+        <include refid="selectCustomerinformationTransactionhistoryVo"/>
+        where transaction_id = #{transactionId}
+    </select>
+
+    <insert id="insertCustomerinformationTransactionhistory" parameterType="CustomerinformationTransactionhistory" useGeneratedKeys="true" keyProperty="transactionId">
+        insert into customerinformation_transactionhistory
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="customerId != null and customerId != ''">customer_id,</if>
+            <if test="orderId != null and orderId != ''">order_id,</if>
+            <if test="transactionType != null and transactionType != ''">transaction_type,</if>
+            <if test="amount != null">amount,</if>
+            <if test="transactionTime != null">transaction_time,</if>
+            <if test="paymentMethod != null">payment_method,</if>
+            <if test="handler != null">handler,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="customerId != null and customerId != ''">#{customerId},</if>
+            <if test="orderId != null and orderId != ''">#{orderId},</if>
+            <if test="transactionType != null and transactionType != ''">#{transactionType},</if>
+            <if test="amount != null">#{amount},</if>
+            <if test="transactionTime != null">#{transactionTime},</if>
+            <if test="paymentMethod != null">#{paymentMethod},</if>
+            <if test="handler != null">#{handler},</if>
+         </trim>
+    </insert>
+
+    <update id="updateCustomerinformationTransactionhistory" parameterType="CustomerinformationTransactionhistory">
+        update customerinformation_transactionhistory
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="customerId != null and customerId != ''">customer_id = #{customerId},</if>
+            <if test="orderId != null and orderId != ''">order_id = #{orderId},</if>
+            <if test="transactionType != null and transactionType != ''">transaction_type = #{transactionType},</if>
+            <if test="amount != null">amount = #{amount},</if>
+            <if test="transactionTime != null">transaction_time = #{transactionTime},</if>
+            <if test="paymentMethod != null">payment_method = #{paymentMethod},</if>
+            <if test="handler != null">handler = #{handler},</if>
+        </trim>
+        where transaction_id = #{transactionId}
+    </update>
+
+    <delete id="deleteCustomerinformationTransactionhistoryByTransactionId" parameterType="Long">
+        delete from customerinformation_transactionhistory where transaction_id = #{transactionId}
+    </delete>
+
+    <delete id="deleteCustomerinformationTransactionhistoryByTransactionIds" parameterType="String">
+        delete from customerinformation_transactionhistory where transaction_id in 
+        <foreach item="transactionId" collection="array" open="(" separator="," close=")">
+            #{transactionId}
+        </foreach>
+    </delete>
+
+</mapper>

@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.SupplierInformation.mapper.SupplierinformationSupplierprofileMapper">
+    
+    <resultMap type="SupplierinformationSupplierprofile" id="SupplierinformationSupplierprofileResult">
+        <result property="supplierId"    column="supplier_id"    />
+        <result property="supplierName"    column="supplier_name"    />
+        <result property="mainCategory"    column="main_category"    />
+        <result property="contactPerson"    column="contact_person"    />
+        <result property="contactPhone"    column="contact_phone"    />
+        <result property="cooperationStart"    column="cooperation_start"    />
+        <result property="cooperationStatus"    column="cooperation_status"    />
+        <result property="creditRating"    column="credit_rating"    />
+    </resultMap>
+
+    <sql id="selectSupplierinformationSupplierprofileVo">
+        select supplier_id, supplier_name, main_category, contact_person, contact_phone, cooperation_start, cooperation_status, credit_rating from supplierinformation_supplierprofile
+    </sql>
+
+    <select id="selectSupplierinformationSupplierprofileList" parameterType="SupplierinformationSupplierprofile" resultMap="SupplierinformationSupplierprofileResult">
+        <include refid="selectSupplierinformationSupplierprofileVo"/>
+        <where>  
+            <if test="supplierId != null  and supplierId != ''"> and supplier_id = #{supplierId}</if>
+            <if test="supplierName != null  and supplierName != ''"> and supplier_name like concat('%', #{supplierName}, '%')</if>
+            <if test="mainCategory != null  and mainCategory != ''"> and main_category = #{mainCategory}</if>
+            <if test="contactPerson != null  and contactPerson != ''"> and contact_person = #{contactPerson}</if>
+            <if test="contactPhone != null  and contactPhone != ''"> and contact_phone = #{contactPhone}</if>
+            <if test="cooperationStart != null "> and cooperation_start = #{cooperationStart}</if>
+            <if test="cooperationStatus != null "> and cooperation_status = #{cooperationStatus}</if>
+            <if test="creditRating != null  and creditRating != ''"> and credit_rating = #{creditRating}</if>
+        </where>
+    </select>
+    
+    <select id="selectSupplierinformationSupplierprofileBySupplierId" parameterType="String" resultMap="SupplierinformationSupplierprofileResult">
+        <include refid="selectSupplierinformationSupplierprofileVo"/>
+        where supplier_id = #{supplierId}
+    </select>
+
+    <insert id="insertSupplierinformationSupplierprofile" parameterType="SupplierinformationSupplierprofile">
+        insert into supplierinformation_supplierprofile
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="supplierId != null and supplierId != ''">supplier_id,</if>
+            <if test="supplierName != null and supplierName != ''">supplier_name,</if>
+            <if test="mainCategory != null and mainCategory != ''">main_category,</if>
+            <if test="contactPerson != null and contactPerson != ''">contact_person,</if>
+            <if test="contactPhone != null and contactPhone != ''">contact_phone,</if>
+            <if test="cooperationStart != null">cooperation_start,</if>
+            <if test="cooperationStatus != null">cooperation_status,</if>
+            <if test="creditRating != null">credit_rating,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="supplierId != null and supplierId != ''">#{supplierId},</if>
+            <if test="supplierName != null and supplierName != ''">#{supplierName},</if>
+            <if test="mainCategory != null and mainCategory != ''">#{mainCategory},</if>
+            <if test="contactPerson != null and contactPerson != ''">#{contactPerson},</if>
+            <if test="contactPhone != null and contactPhone != ''">#{contactPhone},</if>
+            <if test="cooperationStart != null">#{cooperationStart},</if>
+            <if test="cooperationStatus != null">#{cooperationStatus},</if>
+            <if test="creditRating != null">#{creditRating},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSupplierinformationSupplierprofile" parameterType="SupplierinformationSupplierprofile">
+        update supplierinformation_supplierprofile
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="supplierName != null and supplierName != ''">supplier_name = #{supplierName},</if>
+            <if test="mainCategory != null and mainCategory != ''">main_category = #{mainCategory},</if>
+            <if test="contactPerson != null and contactPerson != ''">contact_person = #{contactPerson},</if>
+            <if test="contactPhone != null and contactPhone != ''">contact_phone = #{contactPhone},</if>
+            <if test="cooperationStart != null">cooperation_start = #{cooperationStart},</if>
+            <if test="cooperationStatus != null">cooperation_status = #{cooperationStatus},</if>
+            <if test="creditRating != null">credit_rating = #{creditRating},</if>
+        </trim>
+        where supplier_id = #{supplierId}
+    </update>
+
+    <delete id="deleteSupplierinformationSupplierprofileBySupplierId" parameterType="String">
+        delete from supplierinformation_supplierprofile where supplier_id = #{supplierId}
+    </delete>
+
+    <delete id="deleteSupplierinformationSupplierprofileBySupplierIds" parameterType="String">
+        delete from supplierinformation_supplierprofile where supplier_id in 
+        <foreach item="supplierId" collection="array" open="(" separator="," close=")">
+            #{supplierId}
+        </foreach>
+    </delete>
+
+</mapper>

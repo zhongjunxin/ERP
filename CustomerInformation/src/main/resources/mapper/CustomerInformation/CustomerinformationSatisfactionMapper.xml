@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.CustomerInformation.mapper.CustomerinformationSatisfactionMapper">
+    
+    <resultMap type="CustomerinformationSatisfaction" id="CustomerinformationSatisfactionResult">
+        <result property="surveyId"    column="survey_id"    />
+        <result property="customerId"    column="customer_id"    />
+        <result property="surveyTime"    column="survey_time"    />
+        <result property="score"    column="score"    />
+        <result property="feedback"    column="feedback"    />
+        <result property="processStatus"    column="process_status"    />
+    </resultMap>
+
+    <sql id="selectCustomerinformationSatisfactionVo">
+        select survey_id, customer_id, survey_time, score, feedback, process_status from customerinformation_satisfaction
+    </sql>
+
+    <select id="selectCustomerinformationSatisfactionList" parameterType="CustomerinformationSatisfaction" resultMap="CustomerinformationSatisfactionResult">
+        <include refid="selectCustomerinformationSatisfactionVo"/>
+        <where>  
+            <if test="surveyId != null "> and survey_id = #{surveyId}</if>
+            <if test="customerId != null  and customerId != ''"> and customer_id = #{customerId}</if>
+            <if test="surveyTime != null "> and survey_time = #{surveyTime}</if>
+            <if test="score != null "> and score = #{score}</if>
+            <if test="feedback != null  and feedback != ''"> and feedback = #{feedback}</if>
+            <if test="processStatus != null "> and process_status = #{processStatus}</if>
+        </where>
+    </select>
+    
+    <select id="selectCustomerinformationSatisfactionBySurveyId" parameterType="Long" resultMap="CustomerinformationSatisfactionResult">
+        <include refid="selectCustomerinformationSatisfactionVo"/>
+        where survey_id = #{surveyId}
+    </select>
+
+    <insert id="insertCustomerinformationSatisfaction" parameterType="CustomerinformationSatisfaction" useGeneratedKeys="true" keyProperty="surveyId">
+        insert into customerinformation_satisfaction
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="customerId != null and customerId != ''">customer_id,</if>
+            <if test="surveyTime != null">survey_time,</if>
+            <if test="score != null">score,</if>
+            <if test="feedback != null">feedback,</if>
+            <if test="processStatus != null">process_status,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="customerId != null and customerId != ''">#{customerId},</if>
+            <if test="surveyTime != null">#{surveyTime},</if>
+            <if test="score != null">#{score},</if>
+            <if test="feedback != null">#{feedback},</if>
+            <if test="processStatus != null">#{processStatus},</if>
+         </trim>
+    </insert>
+
+    <update id="updateCustomerinformationSatisfaction" parameterType="CustomerinformationSatisfaction">
+        update customerinformation_satisfaction
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="customerId != null and customerId != ''">customer_id = #{customerId},</if>
+            <if test="surveyTime != null">survey_time = #{surveyTime},</if>
+            <if test="score != null">score = #{score},</if>
+            <if test="feedback != null">feedback = #{feedback},</if>
+            <if test="processStatus != null">process_status = #{processStatus},</if>
+        </trim>
+        where survey_id = #{surveyId}
+    </update>
+
+    <delete id="deleteCustomerinformationSatisfactionBySurveyId" parameterType="Long">
+        delete from customerinformation_satisfaction where survey_id = #{surveyId}
+    </delete>
+
+    <delete id="deleteCustomerinformationSatisfactionBySurveyIds" parameterType="String">
+        delete from customerinformation_satisfaction where survey_id in 
+        <foreach item="surveyId" collection="array" open="(" separator="," close=")">
+            #{surveyId}
+        </foreach>
+    </delete>
+
+</mapper>

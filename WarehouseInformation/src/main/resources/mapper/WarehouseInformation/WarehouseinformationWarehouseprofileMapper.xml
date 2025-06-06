@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.WarehouseInformation.mapper.WarehouseinformationWarehouseprofileMapper">
+    
+    <resultMap type="WarehouseinformationWarehouseprofile" id="WarehouseinformationWarehouseprofileResult">
+        <result property="warehouseId"    column="warehouse_id"    />
+        <result property="warehouseName"    column="warehouse_name"    />
+        <result property="address"    column="address"    />
+        <result property="manager"    column="manager"    />
+        <result property="contact"    column="contact"    />
+        <result property="capacity"    column="capacity"    />
+        <result property="status"    column="status"    />
+    </resultMap>
+
+    <sql id="selectWarehouseinformationWarehouseprofileVo">
+        select warehouse_id, warehouse_name, address, manager, contact, capacity, status from warehouseinformation_warehouseprofile
+    </sql>
+
+    <select id="selectWarehouseinformationWarehouseprofileList" parameterType="WarehouseinformationWarehouseprofile" resultMap="WarehouseinformationWarehouseprofileResult">
+        <include refid="selectWarehouseinformationWarehouseprofileVo"/>
+        <where>  
+            <if test="warehouseId != null  and warehouseId != ''"> and warehouse_id = #{warehouseId}</if>
+            <if test="warehouseName != null  and warehouseName != ''"> and warehouse_name like concat('%', #{warehouseName}, '%')</if>
+            <if test="address != null  and address != ''"> and address = #{address}</if>
+            <if test="manager != null  and manager != ''"> and manager = #{manager}</if>
+            <if test="contact != null  and contact != ''"> and contact = #{contact}</if>
+            <if test="capacity != null "> and capacity = #{capacity}</if>
+            <if test="status != null "> and status = #{status}</if>
+        </where>
+    </select>
+    
+    <select id="selectWarehouseinformationWarehouseprofileByWarehouseId" parameterType="String" resultMap="WarehouseinformationWarehouseprofileResult">
+        <include refid="selectWarehouseinformationWarehouseprofileVo"/>
+        where warehouse_id = #{warehouseId}
+    </select>
+
+    <insert id="insertWarehouseinformationWarehouseprofile" parameterType="WarehouseinformationWarehouseprofile">
+        insert into warehouseinformation_warehouseprofile
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="warehouseId != null and warehouseId != ''">warehouse_id,</if>
+            <if test="warehouseName != null and warehouseName != ''">warehouse_name,</if>
+            <if test="address != null and address != ''">address,</if>
+            <if test="manager != null and manager != ''">manager,</if>
+            <if test="contact != null and contact != ''">contact,</if>
+            <if test="capacity != null">capacity,</if>
+            <if test="status != null">status,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="warehouseId != null and warehouseId != ''">#{warehouseId},</if>
+            <if test="warehouseName != null and warehouseName != ''">#{warehouseName},</if>
+            <if test="address != null and address != ''">#{address},</if>
+            <if test="manager != null and manager != ''">#{manager},</if>
+            <if test="contact != null and contact != ''">#{contact},</if>
+            <if test="capacity != null">#{capacity},</if>
+            <if test="status != null">#{status},</if>
+         </trim>
+    </insert>
+
+    <update id="updateWarehouseinformationWarehouseprofile" parameterType="WarehouseinformationWarehouseprofile">
+        update warehouseinformation_warehouseprofile
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="warehouseName != null and warehouseName != ''">warehouse_name = #{warehouseName},</if>
+            <if test="address != null and address != ''">address = #{address},</if>
+            <if test="manager != null and manager != ''">manager = #{manager},</if>
+            <if test="contact != null and contact != ''">contact = #{contact},</if>
+            <if test="capacity != null">capacity = #{capacity},</if>
+            <if test="status != null">status = #{status},</if>
+        </trim>
+        where warehouse_id = #{warehouseId}
+    </update>
+
+    <delete id="deleteWarehouseinformationWarehouseprofileByWarehouseId" parameterType="String">
+        delete from warehouseinformation_warehouseprofile where warehouse_id = #{warehouseId}
+    </delete>
+
+    <delete id="deleteWarehouseinformationWarehouseprofileByWarehouseIds" parameterType="String">
+        delete from warehouseinformation_warehouseprofile where warehouse_id in 
+        <foreach item="warehouseId" collection="array" open="(" separator="," close=")">
+            #{warehouseId}
+        </foreach>
+    </delete>
+
+</mapper>

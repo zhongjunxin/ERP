@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.Commoditylnformation.mapper.CommoditylnformationBrandMapper">
+    
+    <resultMap type="CommoditylnformationBrand" id="CommoditylnformationBrandResult">
+        <result property="id"    column="id"    />
+        <result property="brandName"    column="brand_name"    />
+        <result property="status"    column="status"    />
+    </resultMap>
+
+    <sql id="selectCommoditylnformationBrandVo">
+        select id, brand_name, status from commoditylnformation_brand
+    </sql>
+
+    <select id="selectCommoditylnformationBrandList" parameterType="CommoditylnformationBrand" resultMap="CommoditylnformationBrandResult">
+        <include refid="selectCommoditylnformationBrandVo"/>
+        <where>  
+            <if test="id != null "> and id = #{id}</if>
+            <if test="brandName != null  and brandName != ''"> and brand_name like concat('%', #{brandName}, '%')</if>
+            <if test="status != null "> and status = #{status}</if>
+        </where>
+    </select>
+    
+    <select id="selectCommoditylnformationBrandById" parameterType="Long" resultMap="CommoditylnformationBrandResult">
+        <include refid="selectCommoditylnformationBrandVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertCommoditylnformationBrand" parameterType="CommoditylnformationBrand" useGeneratedKeys="true" keyProperty="id">
+        insert into commoditylnformation_brand
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="brandName != null and brandName != ''">brand_name,</if>
+            <if test="status != null">status,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="brandName != null and brandName != ''">#{brandName},</if>
+            <if test="status != null">#{status},</if>
+         </trim>
+    </insert>
+
+    <update id="updateCommoditylnformationBrand" parameterType="CommoditylnformationBrand">
+        update commoditylnformation_brand
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="brandName != null and brandName != ''">brand_name = #{brandName},</if>
+            <if test="status != null">status = #{status},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteCommoditylnformationBrandById" parameterType="Long">
+        delete from commoditylnformation_brand where id = #{id}
+    </delete>
+
+    <delete id="deleteCommoditylnformationBrandByIds" parameterType="String">
+        delete from commoditylnformation_brand where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

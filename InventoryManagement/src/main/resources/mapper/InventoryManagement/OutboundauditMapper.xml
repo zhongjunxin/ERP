@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.InventoryManagement.mapper.OutboundauditMapper">
+    
+    <resultMap type="Outboundaudit" id="OutboundauditResult">
+        <result property="auditId"    column="audit_id"    />
+        <result property="warehouseId"    column="warehouse_id"    />
+        <result property="warehouseName"    column="warehouse_name"    />
+        <result property="businessType"    column="business_type"    />
+        <result property="productTypes"    column="product_types"    />
+        <result property="auditStatus"    column="audit_status"    />
+        <result property="initiator"    column="initiator"    />
+        <result property="operationTime"    column="operation_time"    />
+        <result property="auditor"    column="auditor"    />
+        <result property="auditTime"    column="audit_time"    />
+    </resultMap>
+
+    <sql id="selectOutboundauditVo">
+        select audit_id, warehouse_id, warehouse_name, business_type, product_types, audit_status, initiator, operation_time, auditor, audit_time from outboundaudit
+    </sql>
+
+    <select id="selectOutboundauditList" parameterType="Outboundaudit" resultMap="OutboundauditResult">
+        <include refid="selectOutboundauditVo"/>
+        <where>  
+            <if test="auditId != null "> and audit_id = #{auditId}</if>
+            <if test="warehouseId != null  and warehouseId != ''"> and warehouse_id = #{warehouseId}</if>
+            <if test="warehouseName != null  and warehouseName != ''"> and warehouse_name like concat('%', #{warehouseName}, '%')</if>
+            <if test="businessType != null  and businessType != ''"> and business_type = #{businessType}</if>
+            <if test="productTypes != null "> and product_types = #{productTypes}</if>
+            <if test="auditStatus != null "> and audit_status = #{auditStatus}</if>
+            <if test="initiator != null  and initiator != ''"> and initiator = #{initiator}</if>
+            <if test="operationTime != null "> and operation_time = #{operationTime}</if>
+            <if test="auditor != null  and auditor != ''"> and auditor = #{auditor}</if>
+            <if test="auditTime != null "> and audit_time = #{auditTime}</if>
+        </where>
+    </select>
+    
+    <select id="selectOutboundauditByAuditId" parameterType="Long" resultMap="OutboundauditResult">
+        <include refid="selectOutboundauditVo"/>
+        where audit_id = #{auditId}
+    </select>
+
+    <insert id="insertOutboundaudit" parameterType="Outboundaudit" useGeneratedKeys="true" keyProperty="auditId">
+        insert into outboundaudit
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="warehouseId != null and warehouseId != ''">warehouse_id,</if>
+            <if test="warehouseName != null and warehouseName != ''">warehouse_name,</if>
+            <if test="businessType != null and businessType != ''">business_type,</if>
+            <if test="productTypes != null">product_types,</if>
+            <if test="auditStatus != null">audit_status,</if>
+            <if test="initiator != null and initiator != ''">initiator,</if>
+            <if test="operationTime != null">operation_time,</if>
+            <if test="auditor != null">auditor,</if>
+            <if test="auditTime != null">audit_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="warehouseId != null and warehouseId != ''">#{warehouseId},</if>
+            <if test="warehouseName != null and warehouseName != ''">#{warehouseName},</if>
+            <if test="businessType != null and businessType != ''">#{businessType},</if>
+            <if test="productTypes != null">#{productTypes},</if>
+            <if test="auditStatus != null">#{auditStatus},</if>
+            <if test="initiator != null and initiator != ''">#{initiator},</if>
+            <if test="operationTime != null">#{operationTime},</if>
+            <if test="auditor != null">#{auditor},</if>
+            <if test="auditTime != null">#{auditTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateOutboundaudit" parameterType="Outboundaudit">
+        update outboundaudit
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="warehouseId != null and warehouseId != ''">warehouse_id = #{warehouseId},</if>
+            <if test="warehouseName != null and warehouseName != ''">warehouse_name = #{warehouseName},</if>
+            <if test="businessType != null and businessType != ''">business_type = #{businessType},</if>
+            <if test="productTypes != null">product_types = #{productTypes},</if>
+            <if test="auditStatus != null">audit_status = #{auditStatus},</if>
+            <if test="initiator != null and initiator != ''">initiator = #{initiator},</if>
+            <if test="operationTime != null">operation_time = #{operationTime},</if>
+            <if test="auditor != null">auditor = #{auditor},</if>
+            <if test="auditTime != null">audit_time = #{auditTime},</if>
+        </trim>
+        where audit_id = #{auditId}
+    </update>
+
+    <delete id="deleteOutboundauditByAuditId" parameterType="Long">
+        delete from outboundaudit where audit_id = #{auditId}
+    </delete>
+
+    <delete id="deleteOutboundauditByAuditIds" parameterType="String">
+        delete from outboundaudit where audit_id in 
+        <foreach item="auditId" collection="array" open="(" separator="," close=")">
+            #{auditId}
+        </foreach>
+    </delete>
+
+</mapper>

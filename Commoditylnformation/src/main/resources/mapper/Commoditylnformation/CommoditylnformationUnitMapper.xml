@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.Commoditylnformation.mapper.CommoditylnformationUnitMapper">
+    
+    <resultMap type="CommoditylnformationUnit" id="CommoditylnformationUnitResult">
+        <result property="id"    column="id"    />
+        <result property="unitName"    column="unit_name"    />
+        <result property="status"    column="status"    />
+    </resultMap>
+
+    <sql id="selectCommoditylnformationUnitVo">
+        select id, unit_name, status from commoditylnformation_unit
+    </sql>
+
+    <select id="selectCommoditylnformationUnitList" parameterType="CommoditylnformationUnit" resultMap="CommoditylnformationUnitResult">
+        <include refid="selectCommoditylnformationUnitVo"/>
+        <where>  
+            <if test="id != null "> and id = #{id}</if>
+            <if test="unitName != null  and unitName != ''"> and unit_name like concat('%', #{unitName}, '%')</if>
+            <if test="status != null "> and status = #{status}</if>
+        </where>
+    </select>
+    
+    <select id="selectCommoditylnformationUnitById" parameterType="Long" resultMap="CommoditylnformationUnitResult">
+        <include refid="selectCommoditylnformationUnitVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertCommoditylnformationUnit" parameterType="CommoditylnformationUnit" useGeneratedKeys="true" keyProperty="id">
+        insert into commoditylnformation_unit
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="unitName != null and unitName != ''">unit_name,</if>
+            <if test="status != null">status,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="unitName != null and unitName != ''">#{unitName},</if>
+            <if test="status != null">#{status},</if>
+         </trim>
+    </insert>
+
+    <update id="updateCommoditylnformationUnit" parameterType="CommoditylnformationUnit">
+        update commoditylnformation_unit
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="unitName != null and unitName != ''">unit_name = #{unitName},</if>
+            <if test="status != null">status = #{status},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteCommoditylnformationUnitById" parameterType="Long">
+        delete from commoditylnformation_unit where id = #{id}
+    </delete>
+
+    <delete id="deleteCommoditylnformationUnitByIds" parameterType="String">
+        delete from commoditylnformation_unit where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

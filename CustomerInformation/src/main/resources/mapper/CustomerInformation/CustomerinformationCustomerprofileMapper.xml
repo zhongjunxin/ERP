@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.CustomerInformation.mapper.CustomerinformationCustomerprofileMapper">
+    
+    <resultMap type="CustomerinformationCustomerprofile" id="CustomerinformationCustomerprofileResult">
+        <result property="customerId"    column="customer_id"    />
+        <result property="customerName"    column="customer_name"    />
+        <result property="customerType"    column="customer_type"    />
+        <result property="contact"    column="contact"    />
+        <result property="address"    column="address"    />
+        <result property="creditRating"    column="credit_rating"    />
+        <result property="customerLevel"    column="customer_level"    />
+        <result property="status"    column="status"    />
+    </resultMap>
+
+    <sql id="selectCustomerinformationCustomerprofileVo">
+        select customer_id, customer_name, customer_type, contact, address, credit_rating, customer_level, status from customerinformation_customerprofile
+    </sql>
+
+    <select id="selectCustomerinformationCustomerprofileList" parameterType="CustomerinformationCustomerprofile" resultMap="CustomerinformationCustomerprofileResult">
+        <include refid="selectCustomerinformationCustomerprofileVo"/>
+        <where>  
+            <if test="customerId != null  and customerId != ''"> and customer_id = #{customerId}</if>
+            <if test="customerName != null  and customerName != ''"> and customer_name like concat('%', #{customerName}, '%')</if>
+            <if test="customerType != null  and customerType != ''"> and customer_type = #{customerType}</if>
+            <if test="contact != null  and contact != ''"> and contact = #{contact}</if>
+            <if test="address != null  and address != ''"> and address = #{address}</if>
+            <if test="creditRating != null  and creditRating != ''"> and credit_rating = #{creditRating}</if>
+            <if test="customerLevel != null  and customerLevel != ''"> and customer_level = #{customerLevel}</if>
+            <if test="status != null "> and status = #{status}</if>
+        </where>
+    </select>
+    
+    <select id="selectCustomerinformationCustomerprofileByCustomerId" parameterType="String" resultMap="CustomerinformationCustomerprofileResult">
+        <include refid="selectCustomerinformationCustomerprofileVo"/>
+        where customer_id = #{customerId}
+    </select>
+
+    <insert id="insertCustomerinformationCustomerprofile" parameterType="CustomerinformationCustomerprofile">
+        insert into customerinformation_customerprofile
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="customerId != null and customerId != ''">customer_id,</if>
+            <if test="customerName != null and customerName != ''">customer_name,</if>
+            <if test="customerType != null and customerType != ''">customer_type,</if>
+            <if test="contact != null and contact != ''">contact,</if>
+            <if test="address != null">address,</if>
+            <if test="creditRating != null">credit_rating,</if>
+            <if test="customerLevel != null">customer_level,</if>
+            <if test="status != null">status,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="customerId != null and customerId != ''">#{customerId},</if>
+            <if test="customerName != null and customerName != ''">#{customerName},</if>
+            <if test="customerType != null and customerType != ''">#{customerType},</if>
+            <if test="contact != null and contact != ''">#{contact},</if>
+            <if test="address != null">#{address},</if>
+            <if test="creditRating != null">#{creditRating},</if>
+            <if test="customerLevel != null">#{customerLevel},</if>
+            <if test="status != null">#{status},</if>
+         </trim>
+    </insert>
+
+    <update id="updateCustomerinformationCustomerprofile" parameterType="CustomerinformationCustomerprofile">
+        update customerinformation_customerprofile
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="customerName != null and customerName != ''">customer_name = #{customerName},</if>
+            <if test="customerType != null and customerType != ''">customer_type = #{customerType},</if>
+            <if test="contact != null and contact != ''">contact = #{contact},</if>
+            <if test="address != null">address = #{address},</if>
+            <if test="creditRating != null">credit_rating = #{creditRating},</if>
+            <if test="customerLevel != null">customer_level = #{customerLevel},</if>
+            <if test="status != null">status = #{status},</if>
+        </trim>
+        where customer_id = #{customerId}
+    </update>
+
+    <delete id="deleteCustomerinformationCustomerprofileByCustomerId" parameterType="String">
+        delete from customerinformation_customerprofile where customer_id = #{customerId}
+    </delete>
+
+    <delete id="deleteCustomerinformationCustomerprofileByCustomerIds" parameterType="String">
+        delete from customerinformation_customerprofile where customer_id in 
+        <foreach item="customerId" collection="array" open="(" separator="," close=")">
+            #{customerId}
+        </foreach>
+    </delete>
+
+</mapper>

@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.SupplierInformation.mapper.SupplierinformationKpiMapper">
+    
+    <resultMap type="SupplierinformationKpi" id="SupplierinformationKpiResult">
+        <result property="evaluationId"    column="evaluation_id"    />
+        <result property="supplierId"    column="supplier_id"    />
+        <result property="evaluationPeriod"    column="evaluation_period"    />
+        <result property="passRate"    column="pass_rate"    />
+        <result property="onTimeRate"    column="on_time_rate"    />
+        <result property="serviceScore"    column="service_score"    />
+        <result property="totalScore"    column="total_score"    />
+        <result property="evaluationDate"    column="evaluation_date"    />
+        <result property="evaluator"    column="evaluator"    />
+    </resultMap>
+
+    <sql id="selectSupplierinformationKpiVo">
+        select evaluation_id, supplier_id, evaluation_period, pass_rate, on_time_rate, service_score, total_score, evaluation_date, evaluator from supplierinformation_kpi
+    </sql>
+
+    <select id="selectSupplierinformationKpiList" parameterType="SupplierinformationKpi" resultMap="SupplierinformationKpiResult">
+        <include refid="selectSupplierinformationKpiVo"/>
+        <where>  
+            <if test="evaluationId != null "> and evaluation_id = #{evaluationId}</if>
+            <if test="supplierId != null  and supplierId != ''"> and supplier_id = #{supplierId}</if>
+            <if test="evaluationPeriod != null  and evaluationPeriod != ''"> and evaluation_period = #{evaluationPeriod}</if>
+            <if test="passRate != null "> and pass_rate = #{passRate}</if>
+            <if test="onTimeRate != null "> and on_time_rate = #{onTimeRate}</if>
+            <if test="serviceScore != null "> and service_score = #{serviceScore}</if>
+            <if test="totalScore != null "> and total_score = #{totalScore}</if>
+            <if test="evaluationDate != null "> and evaluation_date = #{evaluationDate}</if>
+            <if test="evaluator != null  and evaluator != ''"> and evaluator = #{evaluator}</if>
+        </where>
+    </select>
+    
+    <select id="selectSupplierinformationKpiByEvaluationId" parameterType="Long" resultMap="SupplierinformationKpiResult">
+        <include refid="selectSupplierinformationKpiVo"/>
+        where evaluation_id = #{evaluationId}
+    </select>
+
+    <insert id="insertSupplierinformationKpi" parameterType="SupplierinformationKpi" useGeneratedKeys="true" keyProperty="evaluationId">
+        insert into supplierinformation_kpi
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="supplierId != null and supplierId != ''">supplier_id,</if>
+            <if test="evaluationPeriod != null and evaluationPeriod != ''">evaluation_period,</if>
+            <if test="passRate != null">pass_rate,</if>
+            <if test="onTimeRate != null">on_time_rate,</if>
+            <if test="serviceScore != null">service_score,</if>
+            <if test="totalScore != null">total_score,</if>
+            <if test="evaluationDate != null">evaluation_date,</if>
+            <if test="evaluator != null and evaluator != ''">evaluator,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="supplierId != null and supplierId != ''">#{supplierId},</if>
+            <if test="evaluationPeriod != null and evaluationPeriod != ''">#{evaluationPeriod},</if>
+            <if test="passRate != null">#{passRate},</if>
+            <if test="onTimeRate != null">#{onTimeRate},</if>
+            <if test="serviceScore != null">#{serviceScore},</if>
+            <if test="totalScore != null">#{totalScore},</if>
+            <if test="evaluationDate != null">#{evaluationDate},</if>
+            <if test="evaluator != null and evaluator != ''">#{evaluator},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSupplierinformationKpi" parameterType="SupplierinformationKpi">
+        update supplierinformation_kpi
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="supplierId != null and supplierId != ''">supplier_id = #{supplierId},</if>
+            <if test="evaluationPeriod != null and evaluationPeriod != ''">evaluation_period = #{evaluationPeriod},</if>
+            <if test="passRate != null">pass_rate = #{passRate},</if>
+            <if test="onTimeRate != null">on_time_rate = #{onTimeRate},</if>
+            <if test="serviceScore != null">service_score = #{serviceScore},</if>
+            <if test="totalScore != null">total_score = #{totalScore},</if>
+            <if test="evaluationDate != null">evaluation_date = #{evaluationDate},</if>
+            <if test="evaluator != null and evaluator != ''">evaluator = #{evaluator},</if>
+        </trim>
+        where evaluation_id = #{evaluationId}
+    </update>
+
+    <delete id="deleteSupplierinformationKpiByEvaluationId" parameterType="Long">
+        delete from supplierinformation_kpi where evaluation_id = #{evaluationId}
+    </delete>
+
+    <delete id="deleteSupplierinformationKpiByEvaluationIds" parameterType="String">
+        delete from supplierinformation_kpi where evaluation_id in 
+        <foreach item="evaluationId" collection="array" open="(" separator="," close=")">
+            #{evaluationId}
+        </foreach>
+    </delete>
+
+</mapper>

@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.Commoditylnformation.mapper.CommoditylnformationManageMapper">
+    
+    <resultMap type="CommoditylnformationManage" id="CommoditylnformationManageResult">
+        <result property="productNumber"    column="product_number"    />
+        <result property="productImage"    column="product_image"    />
+        <result property="productName"    column="product_name"    />
+        <result property="categoryId"    column="category_id"    />
+        <result property="brandId"    column="brand_id"    />
+        <result property="unitId"    column="unit_id"    />
+        <result property="suggestedPurchasePrice"    column="suggested_purchase_price"    />
+        <result property="suggestedSalePrice"    column="suggested_sale_price"    />
+    </resultMap>
+
+    <sql id="selectCommoditylnformationManageVo">
+        select product_number, product_image, product_name, category_id, brand_id, unit_id, suggested_purchase_price, suggested_sale_price from commoditylnformation_manage
+    </sql>
+
+    <select id="selectCommoditylnformationManageList" parameterType="CommoditylnformationManage" resultMap="CommoditylnformationManageResult">
+        <include refid="selectCommoditylnformationManageVo"/>
+        <where>  
+            <if test="productNumber != null  and productNumber != ''"> and product_number = #{productNumber}</if>
+            <if test="productImage != null  and productImage != ''"> and product_image = #{productImage}</if>
+            <if test="productName != null  and productName != ''"> and product_name like concat('%', #{productName}, '%')</if>
+            <if test="categoryId != null "> and category_id = #{categoryId}</if>
+            <if test="brandId != null "> and brand_id = #{brandId}</if>
+            <if test="unitId != null "> and unit_id = #{unitId}</if>
+            <if test="suggestedPurchasePrice != null "> and suggested_purchase_price = #{suggestedPurchasePrice}</if>
+            <if test="suggestedSalePrice != null "> and suggested_sale_price = #{suggestedSalePrice}</if>
+        </where>
+    </select>
+    
+    <select id="selectCommoditylnformationManageByProductNumber" parameterType="String" resultMap="CommoditylnformationManageResult">
+        <include refid="selectCommoditylnformationManageVo"/>
+        where product_number = #{productNumber}
+    </select>
+
+    <insert id="insertCommoditylnformationManage" parameterType="CommoditylnformationManage">
+        insert into commoditylnformation_manage
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="productNumber != null and productNumber != ''">product_number,</if>
+            <if test="productImage != null">product_image,</if>
+            <if test="productName != null and productName != ''">product_name,</if>
+            <if test="categoryId != null">category_id,</if>
+            <if test="brandId != null">brand_id,</if>
+            <if test="unitId != null">unit_id,</if>
+            <if test="suggestedPurchasePrice != null">suggested_purchase_price,</if>
+            <if test="suggestedSalePrice != null">suggested_sale_price,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="productNumber != null and productNumber != ''">#{productNumber},</if>
+            <if test="productImage != null">#{productImage},</if>
+            <if test="productName != null and productName != ''">#{productName},</if>
+            <if test="categoryId != null">#{categoryId},</if>
+            <if test="brandId != null">#{brandId},</if>
+            <if test="unitId != null">#{unitId},</if>
+            <if test="suggestedPurchasePrice != null">#{suggestedPurchasePrice},</if>
+            <if test="suggestedSalePrice != null">#{suggestedSalePrice},</if>
+         </trim>
+    </insert>
+
+    <update id="updateCommoditylnformationManage" parameterType="CommoditylnformationManage">
+        update commoditylnformation_manage
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="productImage != null">product_image = #{productImage},</if>
+            <if test="productName != null and productName != ''">product_name = #{productName},</if>
+            <if test="categoryId != null">category_id = #{categoryId},</if>
+            <if test="brandId != null">brand_id = #{brandId},</if>
+            <if test="unitId != null">unit_id = #{unitId},</if>
+            <if test="suggestedPurchasePrice != null">suggested_purchase_price = #{suggestedPurchasePrice},</if>
+            <if test="suggestedSalePrice != null">suggested_sale_price = #{suggestedSalePrice},</if>
+        </trim>
+        where product_number = #{productNumber}
+    </update>
+
+    <delete id="deleteCommoditylnformationManageByProductNumber" parameterType="String">
+        delete from commoditylnformation_manage where product_number = #{productNumber}
+    </delete>
+
+    <delete id="deleteCommoditylnformationManageByProductNumbers" parameterType="String">
+        delete from commoditylnformation_manage where product_number in 
+        <foreach item="productNumber" collection="array" open="(" separator="," close=")">
+            #{productNumber}
+        </foreach>
+    </delete>
+
+</mapper>

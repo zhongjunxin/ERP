@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.ProcurementManagement.mapper.PurchasereturnsMapper">
+    
+    <resultMap type="Purchasereturns" id="PurchasereturnsResult">
+        <result property="returnId"    column="return_id"    />
+        <result property="warehouseId"    column="warehouse_id"    />
+        <result property="supplierId"    column="supplier_id"    />
+        <result property="supplierName"    column="supplier_name"    />
+        <result property="productTypes"    column="product_types"    />
+        <result property="totalAmount"    column="total_amount"    />
+        <result property="relatedIncomingId"    column="related_incoming_id"    />
+        <result property="auditStatus"    column="audit_status"    />
+        <result property="initiator"    column="initiator"    />
+        <result property="operationTime"    column="operation_time"    />
+        <result property="auditor"    column="auditor"    />
+        <result property="auditTime"    column="audit_time"    />
+    </resultMap>
+
+    <sql id="selectPurchasereturnsVo">
+        select return_id, warehouse_id, supplier_id, supplier_name, product_types, total_amount, related_incoming_id, audit_status, initiator, operation_time, auditor, audit_time from purchasereturns
+    </sql>
+
+    <select id="selectPurchasereturnsList" parameterType="Purchasereturns" resultMap="PurchasereturnsResult">
+        <include refid="selectPurchasereturnsVo"/>
+        <where>  
+            <if test="returnId != null "> and return_id = #{returnId}</if>
+            <if test="warehouseId != null  and warehouseId != ''"> and warehouse_id = #{warehouseId}</if>
+            <if test="supplierId != null  and supplierId != ''"> and supplier_id = #{supplierId}</if>
+            <if test="supplierName != null  and supplierName != ''"> and supplier_name like concat('%', #{supplierName}, '%')</if>
+            <if test="productTypes != null "> and product_types = #{productTypes}</if>
+            <if test="totalAmount != null "> and total_amount = #{totalAmount}</if>
+            <if test="relatedIncomingId != null "> and related_incoming_id = #{relatedIncomingId}</if>
+            <if test="auditStatus != null "> and audit_status = #{auditStatus}</if>
+            <if test="initiator != null  and initiator != ''"> and initiator = #{initiator}</if>
+            <if test="operationTime != null "> and operation_time = #{operationTime}</if>
+            <if test="auditor != null  and auditor != ''"> and auditor = #{auditor}</if>
+            <if test="auditTime != null "> and audit_time = #{auditTime}</if>
+        </where>
+    </select>
+    
+    <select id="selectPurchasereturnsByReturnId" parameterType="Long" resultMap="PurchasereturnsResult">
+        <include refid="selectPurchasereturnsVo"/>
+        where return_id = #{returnId}
+    </select>
+
+    <insert id="insertPurchasereturns" parameterType="Purchasereturns" useGeneratedKeys="true" keyProperty="returnId">
+        insert into purchasereturns
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="warehouseId != null and warehouseId != ''">warehouse_id,</if>
+            <if test="supplierId != null and supplierId != ''">supplier_id,</if>
+            <if test="supplierName != null and supplierName != ''">supplier_name,</if>
+            <if test="productTypes != null">product_types,</if>
+            <if test="totalAmount != null">total_amount,</if>
+            <if test="relatedIncomingId != null">related_incoming_id,</if>
+            <if test="auditStatus != null">audit_status,</if>
+            <if test="initiator != null and initiator != ''">initiator,</if>
+            <if test="operationTime != null">operation_time,</if>
+            <if test="auditor != null">auditor,</if>
+            <if test="auditTime != null">audit_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="warehouseId != null and warehouseId != ''">#{warehouseId},</if>
+            <if test="supplierId != null and supplierId != ''">#{supplierId},</if>
+            <if test="supplierName != null and supplierName != ''">#{supplierName},</if>
+            <if test="productTypes != null">#{productTypes},</if>
+            <if test="totalAmount != null">#{totalAmount},</if>
+            <if test="relatedIncomingId != null">#{relatedIncomingId},</if>
+            <if test="auditStatus != null">#{auditStatus},</if>
+            <if test="initiator != null and initiator != ''">#{initiator},</if>
+            <if test="operationTime != null">#{operationTime},</if>
+            <if test="auditor != null">#{auditor},</if>
+            <if test="auditTime != null">#{auditTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updatePurchasereturns" parameterType="Purchasereturns">
+        update purchasereturns
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="warehouseId != null and warehouseId != ''">warehouse_id = #{warehouseId},</if>
+            <if test="supplierId != null and supplierId != ''">supplier_id = #{supplierId},</if>
+            <if test="supplierName != null and supplierName != ''">supplier_name = #{supplierName},</if>
+            <if test="productTypes != null">product_types = #{productTypes},</if>
+            <if test="totalAmount != null">total_amount = #{totalAmount},</if>
+            <if test="relatedIncomingId != null">related_incoming_id = #{relatedIncomingId},</if>
+            <if test="auditStatus != null">audit_status = #{auditStatus},</if>
+            <if test="initiator != null and initiator != ''">initiator = #{initiator},</if>
+            <if test="operationTime != null">operation_time = #{operationTime},</if>
+            <if test="auditor != null">auditor = #{auditor},</if>
+            <if test="auditTime != null">audit_time = #{auditTime},</if>
+        </trim>
+        where return_id = #{returnId}
+    </update>
+
+    <delete id="deletePurchasereturnsByReturnId" parameterType="Long">
+        delete from purchasereturns where return_id = #{returnId}
+    </delete>
+
+    <delete id="deletePurchasereturnsByReturnIds" parameterType="String">
+        delete from purchasereturns where return_id in 
+        <foreach item="returnId" collection="array" open="(" separator="," close=")">
+            #{returnId}
+        </foreach>
+    </delete>
+
+</mapper>

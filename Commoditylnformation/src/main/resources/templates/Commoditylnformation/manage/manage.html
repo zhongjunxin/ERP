@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <th:block th:include="include :: header('商品管理列表')" />
+</head>
+<body class="gray-bg">
+     <div class="container-div">
+        <div class="row">
+            <div class="col-sm-12 search-collapse">
+                <form id="formId">
+                    <div class="select-list">
+                        <ul>
+                            <li>
+                                <label>商品编号：</label>
+                                <input type="text" name="productNumber"/>
+                            </li>
+                            <li>
+                                <label>商品图片路径：</label>
+                                <input type="text" name="productImage"/>
+                            </li>
+                            <li>
+                                <label>商品名称：</label>
+                                <input type="text" name="productName"/>
+                            </li>
+                            <li>
+                                <label>商品分类ID：</label>
+                                <input type="text" name="categoryId"/>
+                            </li>
+                            <li>
+                                <label>商品品牌ID：</label>
+                                <input type="text" name="brandId"/>
+                            </li>
+                            <li>
+                                <label>商品单位ID：</label>
+                                <input type="text" name="unitId"/>
+                            </li>
+                            <li>
+                                <label>建议采购价格：</label>
+                                <input type="text" name="suggestedPurchasePrice"/>
+                            </li>
+                            <li>
+                                <label>建议销售价格：</label>
+                                <input type="text" name="suggestedSalePrice"/>
+                            </li>
+                            <li>
+                                <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+                                <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+                            </li>
+                        </ul>
+                    </div>
+                </form>
+            </div>
+
+            <div class="btn-group-sm" id="toolbar" role="group">
+                <a class="btn btn-success" onclick="$.operate.add()" shiro:hasPermission="Commoditylnformation:manage:add">
+                    <i class="fa fa-plus"></i> 添加
+                </a>
+                <a class="btn btn-primary single disabled" onclick="$.operate.edit()" shiro:hasPermission="Commoditylnformation:manage:edit">
+                    <i class="fa fa-edit"></i> 修改
+                </a>
+                <a class="btn btn-danger multiple disabled" onclick="$.operate.removeAll()" shiro:hasPermission="Commoditylnformation:manage:remove">
+                    <i class="fa fa-remove"></i> 删除
+                </a>
+                <a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="Commoditylnformation:manage:export">
+                    <i class="fa fa-download"></i> 导出
+                </a>
+            </div>
+            <div class="col-sm-12 select-table table-striped">
+                <table id="bootstrap-table"></table>
+            </div>
+        </div>
+    </div>
+    <th:block th:include="include :: footer" />
+    <script th:inline="javascript">
+        var editFlag = [[${@permission.hasPermi('Commoditylnformation:manage:edit')}]];
+        var removeFlag = [[${@permission.hasPermi('Commoditylnformation:manage:remove')}]];
+        var prefix = ctx + "Commoditylnformation/manage";
+
+        $(function() {
+            var options = {
+                url: prefix + "/list",
+                createUrl: prefix + "/add",
+                updateUrl: prefix + "/edit/{id}",
+                removeUrl: prefix + "/remove",
+                exportUrl: prefix + "/export",
+                modalName: "商品管理",
+                columns: [{
+                    checkbox: true
+                },
+                {
+                    field: 'productNumber',
+                    title: '商品编号',
+                    visible: false
+                },
+                {
+                    field: 'productImage',
+                    title: '商品图片路径'
+                },
+                {
+                    field: 'productName',
+                    title: '商品名称'
+                },
+                {
+                    field: 'categoryId',
+                    title: '商品分类ID'
+                },
+                {
+                    field: 'brandId',
+                    title: '商品品牌ID'
+                },
+                {
+                    field: 'unitId',
+                    title: '商品单位ID'
+                },
+                {
+                    field: 'suggestedPurchasePrice',
+                    title: '建议采购价格'
+                },
+                {
+                    field: 'suggestedSalePrice',
+                    title: '建议销售价格'
+                },
+                {
+                    title: '操作',
+                    align: 'center',
+                    formatter: function(value, row, index) {
+                        var actions = [];
+                        actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="javascript:void(0)" onclick="$.operate.edit(\'' + row.productNumber + '\')"><i class="fa fa-edit"></i>编辑</a> ');
+                        actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="javascript:void(0)" onclick="$.operate.remove(\'' + row.productNumber + '\')"><i class="fa fa-remove"></i>删除</a>');
+                        return actions.join('');
+                    }
+                }]
+            };
+            $.table.init(options);
+        });
+    </script>
+</body>
+</html>

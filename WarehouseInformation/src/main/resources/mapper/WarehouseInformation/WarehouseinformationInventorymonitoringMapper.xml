@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.WarehouseInformation.mapper.WarehouseinformationInventorymonitoringMapper">
+    
+    <resultMap type="WarehouseinformationInventorymonitoring" id="WarehouseinformationInventorymonitoringResult">
+        <result property="productNumber"    column="product_number"    />
+        <result property="warehouseId"    column="warehouse_id"    />
+        <result property="currentStock"    column="current_stock"    />
+        <result property="safetyStock"    column="safety_stock"    />
+        <result property="lastInbound"    column="last_inbound"    />
+        <result property="lastOutbound"    column="last_outbound"    />
+        <result property="alertStatus"    column="alert_status"    />
+    </resultMap>
+
+    <sql id="selectWarehouseinformationInventorymonitoringVo">
+        select product_number, warehouse_id, current_stock, safety_stock, last_inbound, last_outbound, alert_status from warehouseinformation_inventorymonitoring
+    </sql>
+
+    <select id="selectWarehouseinformationInventorymonitoringList" parameterType="WarehouseinformationInventorymonitoring" resultMap="WarehouseinformationInventorymonitoringResult">
+        <include refid="selectWarehouseinformationInventorymonitoringVo"/>
+        <where>  
+            <if test="productNumber != null  and productNumber != ''"> and product_number = #{productNumber}</if>
+            <if test="warehouseId != null  and warehouseId != ''"> and warehouse_id = #{warehouseId}</if>
+            <if test="currentStock != null "> and current_stock = #{currentStock}</if>
+            <if test="safetyStock != null "> and safety_stock = #{safetyStock}</if>
+            <if test="lastInbound != null "> and last_inbound = #{lastInbound}</if>
+            <if test="lastOutbound != null "> and last_outbound = #{lastOutbound}</if>
+            <if test="alertStatus != null "> and alert_status = #{alertStatus}</if>
+        </where>
+    </select>
+    
+    <select id="selectWarehouseinformationInventorymonitoringByProductNumber" parameterType="String" resultMap="WarehouseinformationInventorymonitoringResult">
+        <include refid="selectWarehouseinformationInventorymonitoringVo"/>
+        where product_number = #{productNumber}
+    </select>
+
+    <insert id="insertWarehouseinformationInventorymonitoring" parameterType="WarehouseinformationInventorymonitoring">
+        insert into warehouseinformation_inventorymonitoring
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="productNumber != null and productNumber != ''">product_number,</if>
+            <if test="warehouseId != null and warehouseId != ''">warehouse_id,</if>
+            <if test="currentStock != null">current_stock,</if>
+            <if test="safetyStock != null">safety_stock,</if>
+            <if test="lastInbound != null">last_inbound,</if>
+            <if test="lastOutbound != null">last_outbound,</if>
+            <if test="alertStatus != null">alert_status,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="productNumber != null and productNumber != ''">#{productNumber},</if>
+            <if test="warehouseId != null and warehouseId != ''">#{warehouseId},</if>
+            <if test="currentStock != null">#{currentStock},</if>
+            <if test="safetyStock != null">#{safetyStock},</if>
+            <if test="lastInbound != null">#{lastInbound},</if>
+            <if test="lastOutbound != null">#{lastOutbound},</if>
+            <if test="alertStatus != null">#{alertStatus},</if>
+         </trim>
+    </insert>
+
+    <update id="updateWarehouseinformationInventorymonitoring" parameterType="WarehouseinformationInventorymonitoring">
+        update warehouseinformation_inventorymonitoring
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="warehouseId != null and warehouseId != ''">warehouse_id = #{warehouseId},</if>
+            <if test="currentStock != null">current_stock = #{currentStock},</if>
+            <if test="safetyStock != null">safety_stock = #{safetyStock},</if>
+            <if test="lastInbound != null">last_inbound = #{lastInbound},</if>
+            <if test="lastOutbound != null">last_outbound = #{lastOutbound},</if>
+            <if test="alertStatus != null">alert_status = #{alertStatus},</if>
+        </trim>
+        where product_number = #{productNumber}
+    </update>
+
+    <delete id="deleteWarehouseinformationInventorymonitoringByProductNumber" parameterType="String">
+        delete from warehouseinformation_inventorymonitoring where product_number = #{productNumber}
+    </delete>
+
+    <delete id="deleteWarehouseinformationInventorymonitoringByProductNumbers" parameterType="String">
+        delete from warehouseinformation_inventorymonitoring where product_number in 
+        <foreach item="productNumber" collection="array" open="(" separator="," close=")">
+            #{productNumber}
+        </foreach>
+    </delete>
+
+</mapper>

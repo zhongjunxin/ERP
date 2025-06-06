@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.WarehouseInformation.mapper.WarehouseinformationOperationsMapper">
+    
+    <resultMap type="WarehouseinformationOperations" id="WarehouseinformationOperationsResult">
+        <result property="operationId"    column="operation_id"    />
+        <result property="operationType"    column="operation_type"    />
+        <result property="relatedOrder"    column="related_order"    />
+        <result property="warehouseId"    column="warehouse_id"    />
+        <result property="productTypes"    column="product_types"    />
+        <result property="operator"    column="operator"    />
+        <result property="operationTime"    column="operation_time"    />
+        <result property="auditStatus"    column="audit_status"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectWarehouseinformationOperationsVo">
+        select operation_id, operation_type, related_order, warehouse_id, product_types, operator, operation_time, audit_status, remark from warehouseinformation_operations
+    </sql>
+
+    <select id="selectWarehouseinformationOperationsList" parameterType="WarehouseinformationOperations" resultMap="WarehouseinformationOperationsResult">
+        <include refid="selectWarehouseinformationOperationsVo"/>
+        <where>  
+            <if test="operationId != null "> and operation_id = #{operationId}</if>
+            <if test="operationType != null  and operationType != ''"> and operation_type = #{operationType}</if>
+            <if test="relatedOrder != null  and relatedOrder != ''"> and related_order = #{relatedOrder}</if>
+            <if test="warehouseId != null  and warehouseId != ''"> and warehouse_id = #{warehouseId}</if>
+            <if test="productTypes != null "> and product_types = #{productTypes}</if>
+            <if test="operator != null  and operator != ''"> and operator = #{operator}</if>
+            <if test="operationTime != null "> and operation_time = #{operationTime}</if>
+            <if test="auditStatus != null "> and audit_status = #{auditStatus}</if>
+        </where>
+    </select>
+    
+    <select id="selectWarehouseinformationOperationsByOperationId" parameterType="Long" resultMap="WarehouseinformationOperationsResult">
+        <include refid="selectWarehouseinformationOperationsVo"/>
+        where operation_id = #{operationId}
+    </select>
+
+    <insert id="insertWarehouseinformationOperations" parameterType="WarehouseinformationOperations" useGeneratedKeys="true" keyProperty="operationId">
+        insert into warehouseinformation_operations
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="operationType != null and operationType != ''">operation_type,</if>
+            <if test="relatedOrder != null and relatedOrder != ''">related_order,</if>
+            <if test="warehouseId != null and warehouseId != ''">warehouse_id,</if>
+            <if test="productTypes != null">product_types,</if>
+            <if test="operator != null and operator != ''">operator,</if>
+            <if test="operationTime != null">operation_time,</if>
+            <if test="auditStatus != null">audit_status,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="operationType != null and operationType != ''">#{operationType},</if>
+            <if test="relatedOrder != null and relatedOrder != ''">#{relatedOrder},</if>
+            <if test="warehouseId != null and warehouseId != ''">#{warehouseId},</if>
+            <if test="productTypes != null">#{productTypes},</if>
+            <if test="operator != null and operator != ''">#{operator},</if>
+            <if test="operationTime != null">#{operationTime},</if>
+            <if test="auditStatus != null">#{auditStatus},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateWarehouseinformationOperations" parameterType="WarehouseinformationOperations">
+        update warehouseinformation_operations
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="operationType != null and operationType != ''">operation_type = #{operationType},</if>
+            <if test="relatedOrder != null and relatedOrder != ''">related_order = #{relatedOrder},</if>
+            <if test="warehouseId != null and warehouseId != ''">warehouse_id = #{warehouseId},</if>
+            <if test="productTypes != null">product_types = #{productTypes},</if>
+            <if test="operator != null and operator != ''">operator = #{operator},</if>
+            <if test="operationTime != null">operation_time = #{operationTime},</if>
+            <if test="auditStatus != null">audit_status = #{auditStatus},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where operation_id = #{operationId}
+    </update>
+
+    <delete id="deleteWarehouseinformationOperationsByOperationId" parameterType="Long">
+        delete from warehouseinformation_operations where operation_id = #{operationId}
+    </delete>
+
+    <delete id="deleteWarehouseinformationOperationsByOperationIds" parameterType="String">
+        delete from warehouseinformation_operations where operation_id in 
+        <foreach item="operationId" collection="array" open="(" separator="," close=")">
+            #{operationId}
+        </foreach>
+    </delete>
+
+</mapper>

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <th:block th:include="include :: header('供应记录管理列表')" />
+</head>
+<body class="gray-bg">
+     <div class="container-div">
+        <div class="row">
+            <div class="col-sm-12 search-collapse">
+                <form id="formId">
+                    <div class="select-list">
+                        <ul>
+                            <li>
+                                <label>供应记录ID：</label>
+                                <input type="text" name="recordId"/>
+                            </li>
+                            <li>
+                                <label>供应商编号：</label>
+                                <input type="text" name="supplierId"/>
+                            </li>
+                            <li>
+                                <label>商品编号：</label>
+                                <input type="text" name="productNumber"/>
+                            </li>
+                            <li>
+                                <label>供应批次：</label>
+                                <input type="text" name="batchNumber"/>
+                            </li>
+                            <li>
+                                <label>供应数量：</label>
+                                <input type="text" name="quantity"/>
+                            </li>
+                            <li>
+                                <label>供应单价：</label>
+                                <input type="text" name="unitPrice"/>
+                            </li>
+                            <li>
+                                <label>供应日期：</label>
+                                <input type="text" class="time-input" placeholder="请选择供应日期" name="supplyDate"/>
+                            </li>
+                            <li>
+                                <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+                                <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+                            </li>
+                        </ul>
+                    </div>
+                </form>
+            </div>
+
+            <div class="btn-group-sm" id="toolbar" role="group">
+                <a class="btn btn-success" onclick="$.operate.add()" shiro:hasPermission="SupplierInformation:supplyrecords:add">
+                    <i class="fa fa-plus"></i> 添加
+                </a>
+                <a class="btn btn-primary single disabled" onclick="$.operate.edit()" shiro:hasPermission="SupplierInformation:supplyrecords:edit">
+                    <i class="fa fa-edit"></i> 修改
+                </a>
+                <a class="btn btn-danger multiple disabled" onclick="$.operate.removeAll()" shiro:hasPermission="SupplierInformation:supplyrecords:remove">
+                    <i class="fa fa-remove"></i> 删除
+                </a>
+                <a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="SupplierInformation:supplyrecords:export">
+                    <i class="fa fa-download"></i> 导出
+                </a>
+            </div>
+            <div class="col-sm-12 select-table table-striped">
+                <table id="bootstrap-table"></table>
+            </div>
+        </div>
+    </div>
+    <th:block th:include="include :: footer" />
+    <script th:inline="javascript">
+        var editFlag = [[${@permission.hasPermi('SupplierInformation:supplyrecords:edit')}]];
+        var removeFlag = [[${@permission.hasPermi('SupplierInformation:supplyrecords:remove')}]];
+        var prefix = ctx + "SupplierInformation/supplyrecords";
+
+        $(function() {
+            var options = {
+                url: prefix + "/list",
+                createUrl: prefix + "/add",
+                updateUrl: prefix + "/edit/{id}",
+                removeUrl: prefix + "/remove",
+                exportUrl: prefix + "/export",
+                modalName: "供应记录管理",
+                columns: [{
+                    checkbox: true
+                },
+                {
+                    field: 'recordId',
+                    title: '供应记录ID',
+                    visible: false
+                },
+                {
+                    field: 'supplierId',
+                    title: '供应商编号'
+                },
+                {
+                    field: 'productNumber',
+                    title: '商品编号'
+                },
+                {
+                    field: 'batchNumber',
+                    title: '供应批次'
+                },
+                {
+                    field: 'quantity',
+                    title: '供应数量'
+                },
+                {
+                    field: 'unitPrice',
+                    title: '供应单价'
+                },
+                {
+                    field: 'supplyDate',
+                    title: '供应日期'
+                },
+                {
+                    field: 'qualityStatus',
+                    title: '质检结果'
+                },
+                {
+                    title: '操作',
+                    align: 'center',
+                    formatter: function(value, row, index) {
+                        var actions = [];
+                        actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="javascript:void(0)" onclick="$.operate.edit(\'' + row.recordId + '\')"><i class="fa fa-edit"></i>编辑</a> ');
+                        actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="javascript:void(0)" onclick="$.operate.remove(\'' + row.recordId + '\')"><i class="fa fa-remove"></i>删除</a>');
+                        return actions.join('');
+                    }
+                }]
+            };
+            $.table.init(options);
+        });
+    </script>
+</body>
+</html>

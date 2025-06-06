@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <th:block th:include="include :: header('修改交易历史记录')" />
+    <th:block th:include="include :: datetimepicker-css" />
+</head>
+<body class="white-bg">
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+        <form class="form-horizontal m" id="form-transactionhistory-edit" th:object="${customerinformationTransactionhistory}">
+            <input name="transactionId" th:field="*{transactionId}" type="hidden">
+            <div class="col-xs-12">
+                <div class="form-group">
+                    <label class="col-sm-3 control-label is-required">客户编号：</label>
+                    <div class="col-sm-8">
+                        <input name="customerId" th:field="*{customerId}" class="form-control" type="text" required>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-12">
+                <div class="form-group">
+                    <label class="col-sm-3 control-label is-required">订单编号：</label>
+                    <div class="col-sm-8">
+                        <input name="orderId" th:field="*{orderId}" class="form-control" type="text" required>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-12">
+                <div class="form-group">
+                    <label class="col-sm-3 control-label is-required">交易金额：</label>
+                    <div class="col-sm-8">
+                        <input name="amount" th:field="*{amount}" class="form-control" type="text" required>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-12">
+                <div class="form-group">
+                    <label class="col-sm-3 control-label is-required">交易时间：</label>
+                    <div class="col-sm-8">
+                        <div class="input-group date">
+                            <input name="transactionTime" th:value="${#dates.format(customerinformationTransactionhistory.transactionTime, 'yyyy-MM-dd')}" class="form-control" placeholder="yyyy-MM-dd" type="text" required>
+                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-12">
+                <div class="form-group">
+                    <label class="col-sm-3 control-label">结算方式：</label>
+                    <div class="col-sm-8">
+                        <input name="paymentMethod" th:field="*{paymentMethod}" class="form-control" type="text">
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-12">
+                <div class="form-group">
+                    <label class="col-sm-3 control-label">经手人：</label>
+                    <div class="col-sm-8">
+                        <input name="handler" th:field="*{handler}" class="form-control" type="text">
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <th:block th:include="include :: footer" />
+    <th:block th:include="include :: datetimepicker-js" />
+    <script th:inline="javascript">
+        var prefix = ctx + "CustomerInformation/transactionhistory";
+        $("#form-transactionhistory-edit").validate({
+            focusCleanup: true
+        });
+
+        function submitHandler() {
+            if ($.validate.form()) {
+                $.operate.save(prefix + "/edit", $('#form-transactionhistory-edit').serialize());
+            }
+        }
+
+        $("input[name='transactionTime']").datetimepicker({
+            format: "yyyy-mm-dd",
+            minView: "month",
+            autoclose: true
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.SupplierInformation.mapper.SupplierinformationSupplyrecordsMapper">
+    
+    <resultMap type="SupplierinformationSupplyrecords" id="SupplierinformationSupplyrecordsResult">
+        <result property="recordId"    column="record_id"    />
+        <result property="supplierId"    column="supplier_id"    />
+        <result property="productNumber"    column="product_number"    />
+        <result property="batchNumber"    column="batch_number"    />
+        <result property="quantity"    column="quantity"    />
+        <result property="unitPrice"    column="unit_price"    />
+        <result property="supplyDate"    column="supply_date"    />
+        <result property="qualityStatus"    column="quality_status"    />
+    </resultMap>
+
+    <sql id="selectSupplierinformationSupplyrecordsVo">
+        select record_id, supplier_id, product_number, batch_number, quantity, unit_price, supply_date, quality_status from supplierinformation_supplyrecords
+    </sql>
+
+    <select id="selectSupplierinformationSupplyrecordsList" parameterType="SupplierinformationSupplyrecords" resultMap="SupplierinformationSupplyrecordsResult">
+        <include refid="selectSupplierinformationSupplyrecordsVo"/>
+        <where>  
+            <if test="recordId != null "> and record_id = #{recordId}</if>
+            <if test="supplierId != null  and supplierId != ''"> and supplier_id = #{supplierId}</if>
+            <if test="productNumber != null  and productNumber != ''"> and product_number = #{productNumber}</if>
+            <if test="batchNumber != null  and batchNumber != ''"> and batch_number = #{batchNumber}</if>
+            <if test="quantity != null "> and quantity = #{quantity}</if>
+            <if test="unitPrice != null "> and unit_price = #{unitPrice}</if>
+            <if test="supplyDate != null "> and supply_date = #{supplyDate}</if>
+            <if test="qualityStatus != null  and qualityStatus != ''"> and quality_status = #{qualityStatus}</if>
+        </where>
+    </select>
+    
+    <select id="selectSupplierinformationSupplyrecordsByRecordId" parameterType="Long" resultMap="SupplierinformationSupplyrecordsResult">
+        <include refid="selectSupplierinformationSupplyrecordsVo"/>
+        where record_id = #{recordId}
+    </select>
+
+    <insert id="insertSupplierinformationSupplyrecords" parameterType="SupplierinformationSupplyrecords" useGeneratedKeys="true" keyProperty="recordId">
+        insert into supplierinformation_supplyrecords
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="supplierId != null and supplierId != ''">supplier_id,</if>
+            <if test="productNumber != null and productNumber != ''">product_number,</if>
+            <if test="batchNumber != null and batchNumber != ''">batch_number,</if>
+            <if test="quantity != null">quantity,</if>
+            <if test="unitPrice != null">unit_price,</if>
+            <if test="supplyDate != null">supply_date,</if>
+            <if test="qualityStatus != null and qualityStatus != ''">quality_status,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="supplierId != null and supplierId != ''">#{supplierId},</if>
+            <if test="productNumber != null and productNumber != ''">#{productNumber},</if>
+            <if test="batchNumber != null and batchNumber != ''">#{batchNumber},</if>
+            <if test="quantity != null">#{quantity},</if>
+            <if test="unitPrice != null">#{unitPrice},</if>
+            <if test="supplyDate != null">#{supplyDate},</if>
+            <if test="qualityStatus != null and qualityStatus != ''">#{qualityStatus},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSupplierinformationSupplyrecords" parameterType="SupplierinformationSupplyrecords">
+        update supplierinformation_supplyrecords
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="supplierId != null and supplierId != ''">supplier_id = #{supplierId},</if>
+            <if test="productNumber != null and productNumber != ''">product_number = #{productNumber},</if>
+            <if test="batchNumber != null and batchNumber != ''">batch_number = #{batchNumber},</if>
+            <if test="quantity != null">quantity = #{quantity},</if>
+            <if test="unitPrice != null">unit_price = #{unitPrice},</if>
+            <if test="supplyDate != null">supply_date = #{supplyDate},</if>
+            <if test="qualityStatus != null and qualityStatus != ''">quality_status = #{qualityStatus},</if>
+        </trim>
+        where record_id = #{recordId}
+    </update>
+
+    <delete id="deleteSupplierinformationSupplyrecordsByRecordId" parameterType="Long">
+        delete from supplierinformation_supplyrecords where record_id = #{recordId}
+    </delete>
+
+    <delete id="deleteSupplierinformationSupplyrecordsByRecordIds" parameterType="String">
+        delete from supplierinformation_supplyrecords where record_id in 
+        <foreach item="recordId" collection="array" open="(" separator="," close=")">
+            #{recordId}
+        </foreach>
+    </delete>
+
+</mapper>

@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.SalesManagement.mapper.SalesreturnMapper">
+    
+    <resultMap type="Salesreturn" id="SalesreturnResult">
+        <result property="returnId"    column="return_id"    />
+        <result property="warehouseId"    column="warehouse_id"    />
+        <result property="warehouseName"    column="warehouse_name"    />
+        <result property="customerId"    column="customer_id"    />
+        <result property="customerName"    column="customer_name"    />
+        <result property="productTypes"    column="product_types"    />
+        <result property="totalAmount"    column="total_amount"    />
+        <result property="relatedOutboundId"    column="related_outbound_id"    />
+        <result property="auditStatus"    column="audit_status"    />
+        <result property="initiator"    column="initiator"    />
+        <result property="operationTime"    column="operation_time"    />
+        <result property="auditor"    column="auditor"    />
+        <result property="auditTime"    column="audit_time"    />
+    </resultMap>
+
+    <sql id="selectSalesreturnVo">
+        select return_id, warehouse_id, warehouse_name, customer_id, customer_name, product_types, total_amount, related_outbound_id, audit_status, initiator, operation_time, auditor, audit_time from salesreturn
+    </sql>
+
+    <select id="selectSalesreturnList" parameterType="Salesreturn" resultMap="SalesreturnResult">
+        <include refid="selectSalesreturnVo"/>
+        <where>  
+            <if test="returnId != null "> and return_id = #{returnId}</if>
+            <if test="warehouseId != null  and warehouseId != ''"> and warehouse_id = #{warehouseId}</if>
+            <if test="warehouseName != null  and warehouseName != ''"> and warehouse_name like concat('%', #{warehouseName}, '%')</if>
+            <if test="customerId != null  and customerId != ''"> and customer_id = #{customerId}</if>
+            <if test="customerName != null  and customerName != ''"> and customer_name like concat('%', #{customerName}, '%')</if>
+            <if test="productTypes != null "> and product_types = #{productTypes}</if>
+            <if test="totalAmount != null "> and total_amount = #{totalAmount}</if>
+            <if test="relatedOutboundId != null "> and related_outbound_id = #{relatedOutboundId}</if>
+            <if test="auditStatus != null "> and audit_status = #{auditStatus}</if>
+            <if test="initiator != null  and initiator != ''"> and initiator = #{initiator}</if>
+            <if test="operationTime != null "> and operation_time = #{operationTime}</if>
+            <if test="auditor != null  and auditor != ''"> and auditor = #{auditor}</if>
+            <if test="auditTime != null "> and audit_time = #{auditTime}</if>
+        </where>
+    </select>
+    
+    <select id="selectSalesreturnByReturnId" parameterType="Long" resultMap="SalesreturnResult">
+        <include refid="selectSalesreturnVo"/>
+        where return_id = #{returnId}
+    </select>
+
+    <insert id="insertSalesreturn" parameterType="Salesreturn" useGeneratedKeys="true" keyProperty="returnId">
+        insert into salesreturn
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="warehouseId != null and warehouseId != ''">warehouse_id,</if>
+            <if test="warehouseName != null and warehouseName != ''">warehouse_name,</if>
+            <if test="customerId != null and customerId != ''">customer_id,</if>
+            <if test="customerName != null and customerName != ''">customer_name,</if>
+            <if test="productTypes != null">product_types,</if>
+            <if test="totalAmount != null">total_amount,</if>
+            <if test="relatedOutboundId != null">related_outbound_id,</if>
+            <if test="auditStatus != null">audit_status,</if>
+            <if test="initiator != null and initiator != ''">initiator,</if>
+            <if test="operationTime != null">operation_time,</if>
+            <if test="auditor != null">auditor,</if>
+            <if test="auditTime != null">audit_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="warehouseId != null and warehouseId != ''">#{warehouseId},</if>
+            <if test="warehouseName != null and warehouseName != ''">#{warehouseName},</if>
+            <if test="customerId != null and customerId != ''">#{customerId},</if>
+            <if test="customerName != null and customerName != ''">#{customerName},</if>
+            <if test="productTypes != null">#{productTypes},</if>
+            <if test="totalAmount != null">#{totalAmount},</if>
+            <if test="relatedOutboundId != null">#{relatedOutboundId},</if>
+            <if test="auditStatus != null">#{auditStatus},</if>
+            <if test="initiator != null and initiator != ''">#{initiator},</if>
+            <if test="operationTime != null">#{operationTime},</if>
+            <if test="auditor != null">#{auditor},</if>
+            <if test="auditTime != null">#{auditTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSalesreturn" parameterType="Salesreturn">
+        update salesreturn
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="warehouseId != null and warehouseId != ''">warehouse_id = #{warehouseId},</if>
+            <if test="warehouseName != null and warehouseName != ''">warehouse_name = #{warehouseName},</if>
+            <if test="customerId != null and customerId != ''">customer_id = #{customerId},</if>
+            <if test="customerName != null and customerName != ''">customer_name = #{customerName},</if>
+            <if test="productTypes != null">product_types = #{productTypes},</if>
+            <if test="totalAmount != null">total_amount = #{totalAmount},</if>
+            <if test="relatedOutboundId != null">related_outbound_id = #{relatedOutboundId},</if>
+            <if test="auditStatus != null">audit_status = #{auditStatus},</if>
+            <if test="initiator != null and initiator != ''">initiator = #{initiator},</if>
+            <if test="operationTime != null">operation_time = #{operationTime},</if>
+            <if test="auditor != null">auditor = #{auditor},</if>
+            <if test="auditTime != null">audit_time = #{auditTime},</if>
+        </trim>
+        where return_id = #{returnId}
+    </update>
+
+    <delete id="deleteSalesreturnByReturnId" parameterType="Long">
+        delete from salesreturn where return_id = #{returnId}
+    </delete>
+
+    <delete id="deleteSalesreturnByReturnIds" parameterType="String">
+        delete from salesreturn where return_id in 
+        <foreach item="returnId" collection="array" open="(" separator="," close=")">
+            #{returnId}
+        </foreach>
+    </delete>
+
+</mapper>
