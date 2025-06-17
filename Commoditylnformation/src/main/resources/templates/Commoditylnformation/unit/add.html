@@ -4,30 +4,42 @@
     <th:block th:include="include :: header('新增商品单位')" />
 </head>
 <body class="white-bg">
-    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
-        <form class="form-horizontal m" id="form-unit-add">
-            <div class="col-xs-12">
-                <div class="form-group">
-                    <label class="col-sm-3 control-label is-required">单位名称：</label>
-                    <div class="col-sm-8">
-                        <input name="unitName" class="form-control" type="text" required>
-                    </div>
+<div class="wrapper wrapper-content animated fadeInRight ibox-content">
+    <form class="form-horizontal m" id="form-unit-add">
+        <div class="col-xs-12">
+            <div class="form-group">
+                <label class="col-sm-3 control-label is-required">单位名称：</label>
+                <div class="col-sm-8">
+                    <input name="unitName" class="form-control" type="text" required maxlength="16"
+                           placeholder="请输入单位名称（16字符以内）">
                 </div>
             </div>
-        </form>
-    </div>
-    <th:block th:include="include :: footer" />
-    <script th:inline="javascript">
-        var prefix = ctx + "Commoditylnformation/unit"
-        $("#form-unit-add").validate({
-            focusCleanup: true
-        });
-
-        function submitHandler() {
-            if ($.validate.form()) {
-                $.operate.save(prefix + "/add", $('#form-unit-add').serialize());
+        </div>
+    </form>
+</div>
+<th:block th:include="include :: footer" />
+<script th:inline="javascript">
+    var prefix = ctx + "Commoditylnformation/unit"
+    $("#form-unit-add").validate({
+        focusCleanup: true,
+        rules: {
+            unitName: {
+                maxlength: 16
+            }
+        },
+        messages: {
+            unitName: {
+                required: "商品单位名称必填，请重新输入。",
+                maxlength: "商品单位名称不能超过16个字符"
             }
         }
-    </script>
+    });
+
+    function submitHandler() {
+        if ($.validate.form()) {
+            $.operate.save(prefix + "/add", $('#form-unit-add').serialize());
+        }
+    }
+</script>
 </body>
 </html>

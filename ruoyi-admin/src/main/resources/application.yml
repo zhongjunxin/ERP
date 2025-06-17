@@ -20,6 +20,9 @@ server:
   servlet:
     # 应用的访问路径
     context-path: /
+    # 添加Cookie 的使用时长
+    session:
+      timeout: 1800  # 单位：秒（默认30分钟）
   tomcat:
     # tomcat的URI编码
     uri-encoding: UTF-8
@@ -45,6 +48,9 @@ user:
 
 # Spring配置
 spring:
+  # RuoYi 使用 Servlet 会话（内存或 Redis)
+  session:
+    store-type: redis  # 启用 Redis 存储 Session
   # 模板引擎
   thymeleaf:
     mode: HTML
@@ -139,7 +145,7 @@ xss:
 # 防止csrf攻击
 csrf:
   # 过滤开关
-  enabled: true
+  enabled: false
   # 白名单（多个用逗号分隔）
   whites: 
 

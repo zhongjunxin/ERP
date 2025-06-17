@@ -4,91 +4,122 @@
     <th:block th:include="include :: header('商品单位列表')" />
 </head>
 <body class="gray-bg">
-     <div class="container-div">
-        <div class="row">
-            <div class="col-sm-12 search-collapse">
-                <form id="formId">
-                    <div class="select-list">
-                        <ul>
-                            <li>
-                                <label>单位ID：</label>
-                                <input type="text" name="id"/>
-                            </li>
-                            <li>
-                                <label>单位名称：</label>
-                                <input type="text" name="unitName"/>
-                            </li>
-                            <li>
-                                <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
-                                <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
-                            </li>
-                        </ul>
-                    </div>
-                </form>
-            </div>
+<div class="container-div">
+    <div class="row">
+        <div class="col-sm-12 search-collapse">
+            <form id="formId">
+                <div class="select-list">
+                    <ul>
+                        <li>
+                            <label>单位名称：</label>
+                            <input type="text" name="unitName" placeholder="请输入商品单位名称查询"/>
+                        </li>
+                        <li>
+                            <label>状态：</label>
+                            <select name="status">
+                                <option value="">全部</option>
+                                <option value="0">禁用</option>
+                                <option value="1">启用</option>
+                            </select>
+                        </li>
+                        <li>
+                            <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+                            <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+                        </li>
+                    </ul>
+                </div>
+            </form>
+        </div>
 
-            <div class="btn-group-sm" id="toolbar" role="group">
-                <a class="btn btn-success" onclick="$.operate.add()" shiro:hasPermission="Commoditylnformation:unit:add">
-                    <i class="fa fa-plus"></i> 添加
-                </a>
-                <a class="btn btn-primary single disabled" onclick="$.operate.edit()" shiro:hasPermission="Commoditylnformation:unit:edit">
-                    <i class="fa fa-edit"></i> 修改
-                </a>
-                <a class="btn btn-danger multiple disabled" onclick="$.operate.removeAll()" shiro:hasPermission="Commoditylnformation:unit:remove">
-                    <i class="fa fa-remove"></i> 删除
-                </a>
-                <a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="Commoditylnformation:unit:export">
-                    <i class="fa fa-download"></i> 导出
-                </a>
-            </div>
-            <div class="col-sm-12 select-table table-striped">
-                <table id="bootstrap-table"></table>
-            </div>
+        <div class="btn-group-sm" id="toolbar" role="group">
+            <a class="btn btn-success" onclick="$.operate.add()" shiro:hasPermission="Commoditylnformation:unit:add">
+                <i class="fa fa-plus"></i> 添加
+            </a>
+            <a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="Commoditylnformation:unit:export">
+                <i class="fa fa-download"></i> 导出
+            </a>
+        </div>
+        <div class="col-sm-12 select-table table-striped">
+            <table id="bootstrap-table"></table>
         </div>
     </div>
-    <th:block th:include="include :: footer" />
-    <script th:inline="javascript">
-        var editFlag = [[${@permission.hasPermi('Commoditylnformation:unit:edit')}]];
-        var removeFlag = [[${@permission.hasPermi('Commoditylnformation:unit:remove')}]];
-        var prefix = ctx + "Commoditylnformation/unit";
+</div>
+<th:block th:include="include :: footer" />
+<script th:inline="javascript">
+    var editFlag = [[${@permission.hasPermi('Commoditylnformation:unit:edit')}]];
+    var removeFlag = [[${@permission.hasPermi('Commoditylnformation:unit:remove')}]];
+    var prefix = ctx + "Commoditylnformation/unit";
 
-        $(function() {
-            var options = {
-                url: prefix + "/list",
-                createUrl: prefix + "/add",
-                updateUrl: prefix + "/edit/{id}",
-                removeUrl: prefix + "/remove",
-                exportUrl: prefix + "/export",
-                modalName: "商品单位",
-                columns: [{
-                    checkbox: true
-                },
-                {
-                    field: 'id',
-                    title: '单位ID',
-                    visible: false
-                },
-                {
-                    field: 'unitName',
-                    title: '单位名称'
-                },
-                {
-                    field: 'status',
-                    title: '状态：0-禁用，1-启用'
-                },
-                {
-                    title: '操作',
-                    align: 'center',
-                    formatter: function(value, row, index) {
-                        var actions = [];
-                        actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="javascript:void(0)" onclick="$.operate.edit(\'' + row.id + '\')"><i class="fa fa-edit"></i>编辑</a> ');
-                        actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="javascript:void(0)" onclick="$.operate.remove(\'' + row.id + '\')"><i class="fa fa-remove"></i>删除</a>');
-                        return actions.join('');
+    $(function() {
+        var options = {
+            url: prefix + "/list",
+            createUrl: prefix + "/add",
+            updateUrl: prefix + "/edit/{id}",
+            removeUrl: prefix + "/remove",
+            exportUrl: prefix + "/export",
+            modalName: "商品单位",
+            columns: [{
+                checkbox: true
+            },
+            {
+                field: 'id',
+                title: '单位ID',
+                visible: false
+            },
+            {
+                field: 'unitName',
+                title: '单位名称'
+            },
+            {
+                field: 'status',
+                title: '状态',
+                formatter: function(value, row, index) {
+<!--                    if (value === 0) {-->
+<!--                        return '<span class="label label-danger">禁用</span>';-->
+<!--                    } else if (value === 1) {-->
+<!--                        return '<span class="label label-success">启用</span>';-->
+<!--                    }-->
+<!--                    return value;-->
+                    return value == 1 ?
+                        '<span class="label label-success">启用</span>' :
+                        '<span class="label label-danger">禁用</span>';
+                }
+            },
+            {
+                title: '操作',
+                align: 'center',
+                formatter: function(value, row, index) {
+                    var actions = [];
+                    actions.push('<a class="btn btn-primary btn-xs ' + editFlag + '" href="javascript:void(0)" onclick="$.operate.edit(\'' + row.id + '\')"><i class="fa fa-edit"></i>修改</a> ');
+
+                    // 根据状态显示启用/禁用按钮
+                    if (row.status == 1) {
+                        actions.push('<a class="btn btn-warning btn-xs ' + editFlag + '" href="javascript:void(0)" onclick="disableUnit(\'' + row.id + '\')"><i class="fa fa-ban"></i>禁用</a> ');
+                    } else {
+                        actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="javascript:void(0)" onclick="enableUnit(\'' + row.id + '\')"><i class="fa fa-check"></i>启用</a> ');
                     }
-                }]
-            };
-            $.table.init(options);
+
+                    actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="javascript:void(0)" onclick="$.operate.remove(\'' + row.id + '\')"><i class="fa fa-remove"></i>删除</a>');
+                    return actions.join('');
+                }
+            }]
+        };
+        $.table.init(options);
+    });
+
+    // 启用单位
+    function enableUnit(id) {
+        $.modal.confirm("确认要启用该商品单位吗？", function() {
+            $.operate.post(prefix + "/enable", { "id": id });
         });
-    </script>
+    }
+
+    // 禁用单位
+    function disableUnit(id) {
+        $.modal.confirm("确认要禁用该商品单位吗？", function() {
+            $.operate.post(prefix + "/disable", { "id": id });
+        });
+    }
+</script>
 </body>
 </html>

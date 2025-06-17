@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper
-PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ruoyi.Commoditylnformation.mapper.CommoditylnformationClassificationMapper">
-    
+
     <resultMap type="CommoditylnformationClassification" id="CommoditylnformationClassificationResult">
         <result property="id"    column="id"    />
         <result property="categoryName"    column="category_name"    />
@@ -16,16 +16,24 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <select id="selectCommoditylnformationClassificationList" parameterType="CommoditylnformationClassification" resultMap="CommoditylnformationClassificationResult">
         <include refid="selectCommoditylnformationClassificationVo"/>
-        <where>  
+        <where>
             <if test="id != null "> and id = #{id}</if>
             <if test="categoryName != null  and categoryName != ''"> and category_name like concat('%', #{categoryName}, '%')</if>
             <if test="status != null "> and status = #{status}</if>
         </where>
+        order by create_time desc
     </select>
-    
+
     <select id="selectCommoditylnformationClassificationById" parameterType="Long" resultMap="CommoditylnformationClassificationResult">
         <include refid="selectCommoditylnformationClassificationVo"/>
         where id = #{id}
+    </select>
+
+    <!-- 修复此处：使用正确的参数名称 -->
+    <select id="checkCategoryNameUnique" resultType="int">
+        select count(1) from commoditylnformation_classification
+        where category_name = #{categoryName}
+        <if test="id != null"> and id != #{id}</if>
     </select>
 
     <insert id="insertCommoditylnformationClassification" parameterType="CommoditylnformationClassification" useGeneratedKeys="true" keyProperty="id">
@@ -33,11 +41,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="categoryName != null and categoryName != ''">category_name,</if>
             <if test="status != null">status,</if>
-         </trim>
+        </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="categoryName != null and categoryName != ''">#{categoryName},</if>
             <if test="status != null">#{status},</if>
-         </trim>
+        </trim>
     </insert>
 
     <update id="updateCommoditylnformationClassification" parameterType="CommoditylnformationClassification">
@@ -49,15 +57,20 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where id = #{id}
     </update>
 
+    <update id="updateClassificationStatus" parameterType="CommoditylnformationClassification">
+        update commoditylnformation_classification
+        set status = #{status}
+        where id = #{id}
+    </update>
+
     <delete id="deleteCommoditylnformationClassificationById" parameterType="Long">
         delete from commoditylnformation_classification where id = #{id}
     </delete>
 
     <delete id="deleteCommoditylnformationClassificationByIds" parameterType="String">
-        delete from commoditylnformation_classification where id in 
+        delete from commoditylnformation_classification where id in
         <foreach item="id" collection="array" open="(" separator="," close=")">
             #{id}
         </foreach>
     </delete>
-
 </mapper>

@@ -1,82 +1,443 @@
 <!DOCTYPE html>
-<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <th:block th:include="include :: header('修改商品管理')" />
+    <th:block th:include="include :: header('修改商品')" />
+    <link th:href="@{/ajax/libs/webuploader/webuploader.css}" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        /* 统一上传容器样式 */
+        .uploader-container {
+            position: relative;
+            width: 120px;
+            height: 120px;
+            border: 1px dashed #d9d9d9;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            background: #fafafa;
+            transition: all 0.3s;
+        }
+
+        .uploader-container:hover {
+            border-color: #1890ff;
+            background-color: #f0f8ff;
+        }
+
+        .uploader-icon {
+            font-size: 24px;
+            color: #8c939d;
+            margin-bottom: 8px;
+        }
+
+        .uploader-tips {
+            text-align: center;
+            color: #8c939d;
+            font-size: 12px;
+            padding: 0 5px;
+        }
+
+        .uploader-preview {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: none;
+            z-index: 1;
+        }
+
+        .uploader-preview.show {
+            display: block;
+        }
+
+        .uploader-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 12px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            z-index: 2;
+        }
+
+        .uploader-container:hover .uploader-overlay {
+            opacity: 1;
+        }
+
+        .webuploader-element-invisible {
+            position: absolute !important;
+            clip: rect(1px 1px 1px 1px);
+        }
+
+        .help-block {
+            margin-top: 8px;
+            color: #999;
+            font-size: 12px;
+        }
+
+        .upload-status {
+            display: none;
+            margin-top: 8px;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+
+        .status-uploading {
+            background: #e6f7ff;
+            color: #1890ff;
+        }
+
+        .status-success {
+            background: #f6ffed;
+            color: #52c41a;
+        }
+
+        .status-error {
+            background: #fff2f0;
+            color: #ff4d4f;
+        }
+
+        /* 确保文件选择器覆盖整个容器 */
+        #filePicker {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 10; /* 确保它在最上层 */
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        /* 提高覆盖层的z-index */
+        .uploader-overlay {
+            z-index: 5; /* 低于filePicker */
+        }
+
+        /* 删除按钮样式 */
+        .delete-btn {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            z-index: 20;
+            background: rgba(255, 0, 0, 0.7);
+            color: white;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .delete-btn:hover {
+            background: #ff4d4f;
+        }
+
+        .preview-container {
+            position: relative;
+            display: inline-block;
+        }
+    </style>
 </head>
 <body class="white-bg">
-    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
-        <form class="form-horizontal m" id="form-manage-edit" th:object="${commoditylnformationManage}">
-            <input name="productNumber" th:field="*{productNumber}" type="hidden">
-            <div class="col-xs-12">
-                <div class="form-group">
-                    <label class="col-sm-3 control-label">商品图片路径：</label>
-                    <div class="col-sm-8">
-                        <input name="productImage" th:field="*{productImage}" class="form-control" type="text">
-                    </div>
-                </div>
-            </div>
-            <div class="col-xs-12">
-                <div class="form-group">
-                    <label class="col-sm-3 control-label is-required">商品名称：</label>
-                    <div class="col-sm-8">
-                        <input name="productName" th:field="*{productName}" class="form-control" type="text" required>
-                    </div>
-                </div>
-            </div>
-            <div class="col-xs-12">
-                <div class="form-group">
-                    <label class="col-sm-3 control-label is-required">商品分类ID：</label>
-                    <div class="col-sm-8">
-                        <input name="categoryId" th:field="*{categoryId}" class="form-control" type="text" required>
-                    </div>
-                </div>
-            </div>
-            <div class="col-xs-12">
-                <div class="form-group">
-                    <label class="col-sm-3 control-label is-required">商品品牌ID：</label>
-                    <div class="col-sm-8">
-                        <input name="brandId" th:field="*{brandId}" class="form-control" type="text" required>
-                    </div>
-                </div>
-            </div>
-            <div class="col-xs-12">
-                <div class="form-group">
-                    <label class="col-sm-3 control-label is-required">商品单位ID：</label>
-                    <div class="col-sm-8">
-                        <input name="unitId" th:field="*{unitId}" class="form-control" type="text" required>
-                    </div>
-                </div>
-            </div>
-            <div class="col-xs-12">
-                <div class="form-group">
-                    <label class="col-sm-3 control-label">建议采购价格：</label>
-                    <div class="col-sm-8">
-                        <input name="suggestedPurchasePrice" th:field="*{suggestedPurchasePrice}" class="form-control" type="text">
-                    </div>
-                </div>
-            </div>
-            <div class="col-xs-12">
-                <div class="form-group">
-                    <label class="col-sm-3 control-label">建议销售价格：</label>
-                    <div class="col-sm-8">
-                        <input name="suggestedSalePrice" th:field="*{suggestedSalePrice}" class="form-control" type="text">
-                    </div>
-                </div>
-            </div>
-        </form>
-    </div>
-    <th:block th:include="include :: footer" />
-    <script th:inline="javascript">
-        var prefix = ctx + "Commoditylnformation/manage";
-        $("#form-manage-edit").validate({
-            focusCleanup: true
-        });
+<div class="wrapper wrapper-content animated fadeInRight ibox-content">
+    <form class="form-horizontal m" id="form-manage-edit" th:object="${commoditylnformationManage}">
+        <input name="productNumber" th:field="*{productNumber}" type="hidden">
 
-        function submitHandler() {
-            if ($.validate.form()) {
-                $.operate.save(prefix + "/edit", $('#form-manage-edit').serialize());
+        <!-- 商品名称 -->
+        <div class="col-xs-12">
+            <div class="form-group">
+                <label class="col-sm-3 control-label is-required">商品名称：</label>
+                <div class="col-sm-8">
+                    <input name="productName" th:field="*{productName}" class="form-control" type="text" maxlength="16" required>
+                </div>
+            </div>
+        </div>
+
+        <!-- 商品分类 -->
+        <div class="col-xs-12">
+            <div class="form-group">
+                <label class="col-sm-3 control-label is-required">商品分类：</label>
+                <div class="col-sm-8">
+                    <select name="categoryId" class="form-control" required>
+                        <option value="">请选择</option>
+                        <option th:each="category : ${categories}"
+                                th:value="${category.value}"
+                                th:selected="${category.value} == *{categoryId}"
+                                th:text="${category.name}"></option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- 商品品牌 -->
+        <div class="col-xs-12">
+            <div class="form-group">
+                <label class="col-sm-3 control-label is-required">商品品牌：</label>
+                <div class="col-sm-8">
+                    <select name="brandId" class="form-control" required>
+                        <option value="">请选择</option>
+                        <option th:each="brand : ${brands}"
+                                th:value="${brand.value}"
+                                th:selected="${brand.value} == *{brandId}"
+                                th:text="${brand.name}"></option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- 商品单位 -->
+        <div class="col-xs-12">
+            <div class="form-group">
+                <label class="col-sm-3 control-label is-required">商品单位：</label>
+                <div class="col-sm-8">
+                    <select name="unitId" class="form-control" required>
+                        <option value="">请选择</option>
+                        <option th:each="unit : ${units}"
+                                th:value="${unit.value}"
+                                th:selected="${unit.value} == *{unitId}"
+                                th:text="${unit.name}"></option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- 建议采购价格 -->
+        <div class="col-xs-12">
+            <div class="form-group">
+                <label class="col-sm-3 control-label is-required">建议采购价格：</label>
+                <div class="col-sm-8">
+                    <input name="suggestedPurchasePrice" th:field="*{suggestedPurchasePrice}" class="form-control" type="number" min="0" max="5000000000" step="0.01" required>
+                </div>
+            </div>
+        </div>
+
+        <!-- 建议销售价格 -->
+        <div class="col-xs-12">
+            <div class="form-group">
+                <label class="col-sm-3 control-label is-required">建议销售价格：</label>
+                <div class="col-sm-8">
+                    <input name="suggestedSalePrice" th:field="*{suggestedSalePrice}" class="form-control" type="number" min="0" max="2000000000" step="0.01" required>
+                </div>
+            </div>
+        </div>
+
+        <!-- 商品图片区域 -->
+        <div class="col-xs-12">
+            <div class="form-group">
+                <label class="col-sm-3 control-label">商品图片：</label>
+                <div class="col-sm-8">
+                    <input type="hidden" name="productImage" id="productImage" th:field="*{productImage}">
+
+                    <!-- 图片预览容器 (当有图片时显示) -->
+                    <div class="preview-container" id="preview-container" th:if="${commoditylnformationManage.productImage}">
+                        <img th:src="${commoditylnformationManage.productImage}"
+                             class="uploader-preview show"
+                             id="preview-image"
+                             style="max-width: 200px; max-height: 200px;">
+                        <div class="delete-btn" onclick="removeImage()">
+                            <i class="fas fa-times"></i>
+                        </div>
+                    </div>
+
+                    <!-- 上传容器 (当没有图片时显示) -->
+                    <div class="uploader-container" id="uploader-container" th:unless="${commoditylnformationManage.productImage}">
+                        <div id="filePicker" style="position: absolute; width: 100%; height: 100%; opacity: 0; cursor: pointer;"></div>
+                        <div class="uploader-icon" id="uploader-icon">
+                            <i class="fas fa-plus"></i>
+                        </div>
+                        <div class="uploader-tips" id="uploader-tips">点击上传图片</div>
+                        <img class="uploader-preview" id="uploader-preview" src="" alt="预览图">
+                        <div class="uploader-overlay">更换图片</div>
+                    </div>
+
+                    <!-- 状态提示 -->
+                    <div class="upload-status" id="upload-status"></div>
+
+                    <div class="help-block">支持JPG/PNG格式，大小不超过200KB</div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<th:block th:include="include :: footer" />
+<script th:src="@{/ajax/libs/webuploader/webuploader.min.js}"></script>
+<script th:inline="javascript">
+    var prefix = ctx + "Commoditylnformation/manage";
+
+    // 表单验证规则
+    $("#form-manage-edit").validate({
+        focusCleanup: true,
+        rules: {
+            productName: {
+                required: true,
+                maxlength: 16
+            },
+            suggestedPurchasePrice: {
+                required: true,
+                number: true,
+                min: 0,
+                max: 5000000000
+            },
+            suggestedSalePrice: {
+                required: true,
+                number: true,
+                min: 0,
+                max: 2000000000
+            }
+        },
+        messages: {
+            productName: {
+                required: "商品名称必填，请重新输入。",
+                maxlength: "商品名称长度不能超过16个字符。"
+            },
+            suggestedPurchasePrice: {
+                required: "建议采购价必填，请重新输入。",
+                number: "请输入有效的数字。",
+                min: "采购价不能小于0。",
+                max: "采购价不能大于5,000,000,000。"
+            },
+            suggestedSalePrice: {
+                required: "建议销售价必填，请重新输入。",
+                number: "请输入有效的数字。",
+                min: "销售价不能小于0。",
+                max: "销售价不能大于2,000,000,000。"
             }
         }
-    </script>
+    });
+
+    $(document).ready(function() {
+        // 显示状态函数
+        function showStatus(message, statusClass) {
+            $('#upload-status')
+                .text(message)
+                .removeClass()
+                .addClass('upload-status ' + statusClass)
+                .show();
+        }
+
+        // 重置上传区域
+        function resetUploader() {
+            $('#uploader-preview').removeClass('show').attr('src', '');
+            $('#uploader-icon').show();
+            $('#uploader-tips').show();
+        }
+
+        // 切换到上传模式
+        function switchToUploadMode() {
+            $('#preview-container').hide();
+            $('#uploader-container').show();
+        }
+
+        // 切换到预览模式(url)
+        function switchToPreviewMode(url) {
+            $('#productImage').val(url);
+            $('#preview-image').attr('src', url);
+            $('#preview-container').show();
+            $('#uploader-container').hide();
+        }
+
+        // 创建隐藏的文件输入
+        var $fileInput = $('<input type="file" accept="image/jpg,image/jpeg,image/png" style="display: none;">');
+        $('body').append($fileInput);
+
+        // 点击上传容器触发文件选择
+        $('#uploader-container').on('click', function() {
+            $fileInput.click();
+        });
+
+        // 当有预览容器时，点击也可以上传
+        $('#preview-container').on('click', function(e) {
+            if (!$(e.target).closest('.delete-btn').length) {
+                $fileInput.click();
+            }
+        });
+
+        $fileInput.on('change', function(e) {
+            var file = e.target.files[0];
+            if (!file) return;
+
+            // 验证文件类型和大小
+            if (!/^image\/(jpeg|png)$/i.test(file.type)) {
+                showStatus('请上传JPG/PNG格式图片', 'status-error');
+                return;
+            }
+            if (file.size > 200 * 1024) {
+                showStatus('图片大小不能超过200KB', 'status-error');
+                return;
+            }
+
+            // 预览图片
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                // 显示预览
+                $('#uploader-preview').attr('src', e.target.result).addClass('show');
+                $('#uploader-icon').hide();
+                $('#uploader-tips').hide();
+                showStatus('准备上传...', 'status-uploading');
+
+                // 上传文件
+                var formData = new FormData();
+                formData.append('file', file);
+
+                $.ajax({
+                    url: ctx + 'common/upload',
+                    type: 'POST',
+                    data: formData,
+                    processData: false, // 必须
+                    contentType: false, // 必须
+                    success: function(response) {
+                        if (response.code == 0) {
+                            showStatus('上传成功', 'status-success');
+                            setTimeout(function() {
+                                $('#upload-status').fadeOut();
+                                switchToPreviewMode(response.url);
+                            }, 1000);
+                        } else {
+                            showStatus('上传失败: ' + response.msg, 'status-error');
+                            resetUploader();
+                        }
+                    },
+                    error: function(xhr) {
+                        showStatus('上传出错: ' + xhr.statusText, 'status-error');
+                        resetUploader();
+                    }
+                });
+            };
+            reader.readAsDataURL(file);
+        });
+    });
+
+    // 删除图片功能
+    function removeImage() {
+        $('#productImage').val('');
+        switchToUploadMode();
+        $('#upload-status').empty();
+    }
+
+    // 表单提交处理
+    function submitHandler() {
+        if ($.validate.form()) {
+            $.operate.save(prefix + "/edit", $('#form-manage-edit').serialize());
+        }
+    }
+</script>
 </body>
 </html>

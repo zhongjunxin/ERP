@@ -1,6 +1,15 @@
 package com.ruoyi.Commoditylnformation.controller;
 
+import java.io.File;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+
+import java.util.UUID;
+
+import com.ruoyi.common.config.RuoYiConfig;
+import com.ruoyi.common.utils.file.FileUploadUtils;
+import org.apache.commons.io.FileUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -18,13 +27,8 @@ import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.utils.poi.ExcelUtil;
 import com.ruoyi.common.core.page.TableDataInfo;
+import org.springframework.web.multipart.MultipartFile;
 
-/**
- * 商品管理Controller
- * 
- * @author ruoyi
- * @date 2025-04-26
- */
 @Controller
 @RequestMapping("/Commoditylnformation/manage")
 public class CommoditylnformationManageController extends BaseController
@@ -41,9 +45,6 @@ public class CommoditylnformationManageController extends BaseController
         return prefix + "/manage";
     }
 
-    /**
-     * 查询商品管理列表
-     */
     @RequiresPermissions("Commoditylnformation:manage:list")
     @PostMapping("/list")
     @ResponseBody
@@ -54,9 +55,6 @@ public class CommoditylnformationManageController extends BaseController
         return getDataTable(list);
     }
 
-    /**
-     * 导出商品管理列表
-     */
     @RequiresPermissions("Commoditylnformation:manage:export")
     @Log(title = "商品管理", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
@@ -68,43 +66,45 @@ public class CommoditylnformationManageController extends BaseController
         return util.exportExcel(list, "商品管理数据");
     }
 
-    /**
-     * 新增商品管理
-     */
     @RequiresPermissions("Commoditylnformation:manage:add")
     @GetMapping("/add")
-    public String add()
+    public String add(ModelMap mmap)
     {
+        // 获取分类、品牌、单位数据
+        mmap.put("categories", commoditylnformationManageService.selectAllCategories());
+        mmap.put("brands", commoditylnformationManageService.selectAllBrands());
+        mmap.put("units", commoditylnformationManageService.selectAllUnits());
         return prefix + "/add";
     }
 
-    /**
-     * 新增保存商品管理
-     */
-    @RequiresPermissions("Commoditylnformation:manage:add")
+    // CommoditylnformationManageController.java
     @Log(title = "商品管理", businessType = BusinessType.INSERT)
     @PostMapping("/add")
     @ResponseBody
-    public AjaxResult addSave(CommoditylnformationManage commoditylnformationManage)
-    {
-        return toAjax(commoditylnformationManageService.insertCommoditylnformationManage(commoditylnformationManage));
+    public AjaxResult addSave(CommoditylnformationManage commoditylnformationManage) {
+        try {
+            return toAjax(commoditylnformationManageService.insertCommoditylnformationManage(commoditylnformationManage));
+        } catch (Exception e) {
+//            log.error("添加商品失败: {}", e.getMessage());
+            return AjaxResult.error("操作失败: " + e.getMessage());
+        }
     }
 
-    /**
-     * 修改商品管理
-     */
     @RequiresPermissions("Commoditylnformation:manage:edit")
     @GetMapping("/edit/{productNumber}")
     public String edit(@PathVariable("productNumber") String productNumber, ModelMap mmap)
     {
         CommoditylnformationManage commoditylnformationManage = commoditylnformationManageService.selectCommoditylnformationManageByProductNumber(productNumber);
         mmap.put("commoditylnformationManage", commoditylnformationManage);
+
+        // 获取分类、品牌、单位数据
+        mmap.put("categories", commoditylnformationManageService.selectAllCategories());
+        mmap.put("brands", commoditylnformationManageService.selectAllBrands());
+        mmap.put("units", commoditylnformationManageService.selectAllUnits());
+
         return prefix + "/edit";
     }
 
-    /**
-     * 修改保存商品管理
-     */
     @RequiresPermissions("Commoditylnformation:manage:edit")
     @Log(title = "商品管理", businessType = BusinessType.UPDATE)
     @PostMapping("/edit")
@@ -114,9 +114,6 @@ public class CommoditylnformationManageController extends BaseController
         return toAjax(commoditylnformationManageService.updateCommoditylnformationManage(commoditylnformationManage));
     }
 
-    /**
-     * 删除商品管理
-     */
     @RequiresPermissions("Commoditylnformation:manage:remove")
     @Log(title = "商品管理", businessType = BusinessType.DELETE)
     @PostMapping( "/remove")
@@ -124,5 +121,42 @@ public class CommoditylnformationManageController extends BaseController
     public AjaxResult remove(String ids)
     {
         return toAjax(commoditylnformationManageService.deleteCommoditylnformationManageByProductNumbers(ids));
+    }
+
+    @RequiresPermissions("Commoditylnformation:manage:edit")
+    @Log(title = "商品管理", businessType = BusinessType.UPDATE)
+    @PostMapping("/changeStatus")
+    @ResponseBody
+    public AjaxResult changeStatus(CommoditylnformationManage commoditylnformationManage)
+    {
+        return toAjax(commoditylnformationManageService.updateStatus(commoditylnformationManage));
+    }
+
+    // 在CommonController.java中添加
+    // 替换原有uploadFile方法
+    @PostMapping("/common/upload")
+    @ResponseBody
+    public AjaxResult uploadFile(MultipartFile file) {
+        try {
+            if (file.isEmpty()) {
+                return AjaxResult.error("上传文件不能为空");
+            }
+
+            // 文件类型验证
+            String fileName = file.getOriginalFilename();
+            String suffix = fileName.substring(fileName.lastIndexOf("."));
+            if (!Arrays.asList(".jpg", ".png", ".jpeg").contains(suffix.toLowerCase())) {
+                return AjaxResult.error("只支持JPG/PNG格式");
+            }
+
+            // 使用RuoYi统一上传工具
+            String uploadDir = RuoYiConfig.getUploadPath() + "/commodity";
+            String filePath = FileUploadUtils.upload(uploadDir, file);
+
+            // 返回相对路径
+            return AjaxResult.success("上传成功", filePath);
+        } catch (Exception e) {
+            return AjaxResult.error("上传失败：" + e.getMessage());
+        }
     }
 }

@@ -7,7 +7,7 @@ import com.ruoyi.common.core.domain.BaseEntity;
 
 /**
  * 商品分类对象 commoditylnformation_classification
- * 
+ *
  * @author ruoyi
  * @date 2025-04-26
  */
@@ -23,35 +23,35 @@ public class CommoditylnformationClassification extends BaseEntity
     private String categoryName;
 
     /** 状态：0-禁用，1-启用 */
-    @Excel(name = "状态：0-禁用，1-启用")
+    @Excel(name = "状态", readConverterExp = "0=禁用,1=启用")
     private Long status;
 
-    public void setId(Long id) 
+    public void setId(Long id)
     {
         this.id = id;
     }
 
-    public Long getId() 
+    public Long getId()
     {
         return id;
     }
 
-    public void setCategoryName(String categoryName) 
+    public void setCategoryName(String categoryName)
     {
         this.categoryName = categoryName;
     }
 
-    public String getCategoryName() 
+    public String getCategoryName()
     {
         return categoryName;
     }
 
-    public void setStatus(Long status) 
+    public void setStatus(Long status)
     {
         this.status = status;
     }
 
-    public Long getStatus() 
+    public Long getStatus()
     {
         return status;
     }
@@ -59,9 +59,9 @@ public class CommoditylnformationClassification extends BaseEntity
     @Override
     public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
-            .append("id", getId())
-            .append("categoryName", getCategoryName())
-            .append("status", getStatus())
-            .toString();
+                .append("id", getId())
+                .append("categoryName", getCategoryName())
+                .append("status", getStatus())
+                .toString();
     }
 }

@@ -21,7 +21,7 @@ import com.ruoyi.common.core.page.TableDataInfo;
 
 /**
  * 商品品牌Controller
- * 
+ *
  * @author ruoyi
  * @date 2025-04-26
  */
@@ -87,6 +87,8 @@ public class CommoditylnformationBrandController extends BaseController
     @ResponseBody
     public AjaxResult addSave(CommoditylnformationBrand commoditylnformationBrand)
     {
+        // 设置默认状态为启用
+        commoditylnformationBrand.setStatus(1L);
         return toAjax(commoditylnformationBrandService.insertCommoditylnformationBrand(commoditylnformationBrand));
     }
 
@@ -124,5 +126,23 @@ public class CommoditylnformationBrandController extends BaseController
     public AjaxResult remove(String ids)
     {
         return toAjax(commoditylnformationBrandService.deleteCommoditylnformationBrandByIds(ids));
+    }
+
+    /**
+     * 切换品牌状态
+     */
+    @RequiresPermissions("Commoditylnformation:brand:edit")
+    @Log(title = "商品品牌", businessType = BusinessType.UPDATE)
+    @PostMapping("/toggleStatus")
+    @ResponseBody
+    public AjaxResult toggleStatus(Long id)
+    {
+        CommoditylnformationBrand brand = commoditylnformationBrandService.selectCommoditylnformationBrandById(id);
+        if (brand == null) {
+            return error("品牌不存在");
+        }
+        // 切换状态
+        brand.setStatus(brand.getStatus() == 1L ? 0L : 1L);
+        return toAjax(commoditylnformationBrandService.updateCommoditylnformationBrand(brand));
     }
 }

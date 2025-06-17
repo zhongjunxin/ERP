@@ -1,6 +1,8 @@
 package com.ruoyi.Commoditylnformation.controller;
 
 import java.util.List;
+
+import com.ruoyi.common.exception.ServiceException;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -21,7 +23,7 @@ import com.ruoyi.common.core.page.TableDataInfo;
 
 /**
  * 商品分类Controller
- * 
+ *
  * @author ruoyi
  * @date 2025-04-26
  */
@@ -87,7 +89,11 @@ public class CommoditylnformationClassificationController extends BaseController
     @ResponseBody
     public AjaxResult addSave(CommoditylnformationClassification commoditylnformationClassification)
     {
-        return toAjax(commoditylnformationClassificationService.insertCommoditylnformationClassification(commoditylnformationClassification));
+        try {
+            return toAjax(commoditylnformationClassificationService.insertCommoditylnformationClassification(commoditylnformationClassification));
+        } catch (ServiceException e) {
+            return error(e.getMessage());
+        }
     }
 
     /**
@@ -111,18 +117,22 @@ public class CommoditylnformationClassificationController extends BaseController
     @ResponseBody
     public AjaxResult editSave(CommoditylnformationClassification commoditylnformationClassification)
     {
-        return toAjax(commoditylnformationClassificationService.updateCommoditylnformationClassification(commoditylnformationClassification));
+        try {
+            return toAjax(commoditylnformationClassificationService.updateCommoditylnformationClassification(commoditylnformationClassification));
+        } catch (ServiceException e) {
+            return error(e.getMessage());
+        }
     }
 
     /**
-     * 删除商品分类
+     * 修改商品分类状态
      */
-    @RequiresPermissions("Commoditylnformation:classification:remove")
-    @Log(title = "商品分类", businessType = BusinessType.DELETE)
-    @PostMapping( "/remove")
+    @RequiresPermissions("Commoditylnformation:classification:edit")
+    @Log(title = "商品分类状态", businessType = BusinessType.UPDATE)
+    @PostMapping("/changeStatus")
     @ResponseBody
-    public AjaxResult remove(String ids)
+    public AjaxResult changeStatus(CommoditylnformationClassification commoditylnformationClassification)
     {
-        return toAjax(commoditylnformationClassificationService.deleteCommoditylnformationClassificationByIds(ids));
+        return toAjax(commoditylnformationClassificationService.updateClassificationStatus(commoditylnformationClassification));
     }
 }

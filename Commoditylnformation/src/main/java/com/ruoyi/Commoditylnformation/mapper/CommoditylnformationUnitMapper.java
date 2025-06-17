@@ -2,60 +2,70 @@ package com.ruoyi.Commoditylnformation.mapper;
 
 import java.util.List;
 import com.ruoyi.Commoditylnformation.domain.CommoditylnformationUnit;
+import org.apache.ibatis.annotations.Param;
 
 /**
- * 商品单位Mapper接口
- * 
+ * 商品单位数据访问层接口
+ * 提供对商品单位表的数据库操作
+ *
  * @author ruoyi
  * @date 2025-04-26
  */
-public interface CommoditylnformationUnitMapper 
-{
+public interface CommoditylnformationUnitMapper {
     /**
-     * 查询商品单位
-     * 
-     * @param id 商品单位主键
-     * @return 商品单位
+     * 根据ID查询商品单位
+     * @param id 单位ID
+     * @return 商品单位对象
      */
-    public CommoditylnformationUnit selectCommoditylnformationUnitById(Long id);
+    CommoditylnformationUnit selectCommoditylnformationUnitById(Long id);
 
     /**
      * 查询商品单位列表
-     * 
-     * @param commoditylnformationUnit 商品单位
-     * @return 商品单位集合
+     * @param commoditylnformationUnit 查询条件
+     * @return 商品单位列表
      */
-    public List<CommoditylnformationUnit> selectCommoditylnformationUnitList(CommoditylnformationUnit commoditylnformationUnit);
+    List<CommoditylnformationUnit> selectCommoditylnformationUnitList(CommoditylnformationUnit commoditylnformationUnit);
 
     /**
      * 新增商品单位
-     * 
-     * @param commoditylnformationUnit 商品单位
-     * @return 结果
+     * @param commoditylnformationUnit 商品单位对象
+     * @return 插入结果
      */
-    public int insertCommoditylnformationUnit(CommoditylnformationUnit commoditylnformationUnit);
+    int insertCommoditylnformationUnit(CommoditylnformationUnit commoditylnformationUnit);
 
     /**
      * 修改商品单位
-     * 
-     * @param commoditylnformationUnit 商品单位
-     * @return 结果
+     * @param commoditylnformationUnit 商品单位对象
+     * @return 更新结果
      */
-    public int updateCommoditylnformationUnit(CommoditylnformationUnit commoditylnformationUnit);
+    int updateCommoditylnformationUnit(CommoditylnformationUnit commoditylnformationUnit);
 
     /**
      * 删除商品单位
-     * 
-     * @param id 商品单位主键
-     * @return 结果
+     * @param id 单位ID
+     * @return 删除结果
      */
-    public int deleteCommoditylnformationUnitById(Long id);
+    int deleteCommoditylnformationUnitById(Long id);
 
     /**
      * 批量删除商品单位
-     * 
-     * @param ids 需要删除的数据主键集合
-     * @return 结果
+     * @param ids 单位ID数组
+     * @return 删除结果
      */
-    public int deleteCommoditylnformationUnitByIds(String[] ids);
+    int deleteCommoditylnformationUnitByIds(String[] ids);
+
+    /**
+     * 检查单位名称是否唯一
+     * @param unitName 单位名称
+     * @return 商品单位对象（如果存在）
+     */
+    CommoditylnformationUnit checkUnitNameUnique(String unitName);
+
+    /**
+     * 更新商品单位状态
+     * @param id 单位ID
+     * @param status 新状态：0-禁用，1-启用
+     * @return 更新结果
+     */
+    int updateStatus(@Param("id") Long id, @Param("status") Long status);
 }

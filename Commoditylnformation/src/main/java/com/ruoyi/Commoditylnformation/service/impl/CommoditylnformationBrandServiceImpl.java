@@ -10,19 +10,19 @@ import com.ruoyi.common.core.text.Convert;
 
 /**
  * 商品品牌Service业务层处理
- * 
+ *
  * @author ruoyi
  * @date 2025-04-26
  */
 @Service
-public class CommoditylnformationBrandServiceImpl implements ICommoditylnformationBrandService 
+public class CommoditylnformationBrandServiceImpl implements ICommoditylnformationBrandService
 {
     @Autowired
     private CommoditylnformationBrandMapper commoditylnformationBrandMapper;
 
     /**
      * 查询商品品牌
-     * 
+     *
      * @param id 商品品牌主键
      * @return 商品品牌
      */
@@ -34,7 +34,7 @@ public class CommoditylnformationBrandServiceImpl implements ICommoditylnformati
 
     /**
      * 查询商品品牌列表
-     * 
+     *
      * @param commoditylnformationBrand 商品品牌
      * @return 商品品牌
      */
@@ -46,7 +46,7 @@ public class CommoditylnformationBrandServiceImpl implements ICommoditylnformati
 
     /**
      * 新增商品品牌
-     * 
+     *
      * @param commoditylnformationBrand 商品品牌
      * @return 结果
      */
@@ -58,7 +58,7 @@ public class CommoditylnformationBrandServiceImpl implements ICommoditylnformati
 
     /**
      * 修改商品品牌
-     * 
+     *
      * @param commoditylnformationBrand 商品品牌
      * @return 结果
      */
@@ -70,7 +70,7 @@ public class CommoditylnformationBrandServiceImpl implements ICommoditylnformati
 
     /**
      * 批量删除商品品牌
-     * 
+     *
      * @param ids 需要删除的商品品牌主键
      * @return 结果
      */
@@ -82,7 +82,7 @@ public class CommoditylnformationBrandServiceImpl implements ICommoditylnformati
 
     /**
      * 删除商品品牌信息
-     * 
+     *
      * @param id 商品品牌主键
      * @return 结果
      */
